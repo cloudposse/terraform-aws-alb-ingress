@@ -28,6 +28,34 @@ variable "tags" {
   description = "Additional tags (e.g. `map(`BusinessUnit`,`XYZ`)"
 }
 
+variable "deregistration_delay" {
+  default = "15"
+}
+
+variable "health_check_path" {
+  default = "/"
+}
+
+variable "health_check_timeout" {
+  default = "10"
+}
+
+variable "health_check_healthy_threshold" {
+  default = "2"
+}
+
+variable "health_check_unhealthy_threshold" {
+  default = "2"
+}
+
+variable "health_check_interval" {
+  default = "15"
+}
+
+variable "health_check_matcher" {
+  default = "200-399"
+}
+
 variable "priority" {
   type    = "string"
   default = "100"
