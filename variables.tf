@@ -33,7 +33,7 @@ variable "target_group_arn" {
 }
 
 variable "listener_arns" {
-  type = "list"
+  type    = "list"
   default = []
 }
 
