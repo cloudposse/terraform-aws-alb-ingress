@@ -28,6 +28,15 @@ variable "tags" {
   description = "Additional tags (e.g. `map(`BusinessUnit`,`XYZ`)"
 }
 
+variable "target_group_arn" {
+  default = ""
+}
+
+variable "listener_arns" {
+  type = "list"
+  default = []
+}
+
 variable "deregistration_delay" {
   default = "15"
 }
