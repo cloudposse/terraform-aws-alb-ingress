@@ -1,6 +1,5 @@
 locals {
   generate_target_group_arn = "${var.target_group_arn == "" ? 1 : 0}"
-  num_listeners = "${length(var.listener_arns)}"
 }
 
 locals {
@@ -44,7 +43,7 @@ resource "aws_lb_target_group" "default" {
 }
 
 resource "aws_lb_listener_rule" "default" {
-  count        = "${local.num_listeners}"
+  count        = "${length(var.listener_arns)}"
   listener_arn = "${var.listener_arns[count.index]}"
   priority     = "${var.priority+var.listener_arns[count.index]}"
 
