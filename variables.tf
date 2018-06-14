@@ -71,13 +71,13 @@ variable "priority" {
 }
 
 variable "port" {
-  type  = "string"
-  value = "80"
+  type    = "string"
+  default = "80"
 }
 
 variable "protocol" {
-  type  = "string"
-  value = "HTTP"
+  type    = "string"
+  default = "HTTP"
 }
 
 variable "target_type" {
@@ -90,11 +90,11 @@ variable "vpc_id" {
 }
 
 variable "hosts" {
-  type  = "list"
-  value = ["*"]
+  type    = "list"
+  default = ["*"]
 }
 
 variable "paths" {
-  type  = "list"
-  value = ["/*"]
+  type    = "list"
+  default = ["/*"]
 }
