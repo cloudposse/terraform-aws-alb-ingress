@@ -3,7 +3,7 @@ locals {
 }
 
 module "default_label" {
-  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.3.5"
+  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.1.3"
   enabled    = "${local.generate_target_group_arn}"
   attributes = "${var.attributes}"
   delimiter  = "${var.delimiter}"
