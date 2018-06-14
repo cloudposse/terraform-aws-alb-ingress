@@ -1,5 +1,10 @@
 locals {
   generate_target_group_arn = "${var.target_group_arn == "" ? 1 : 0}"
+  num_listeners = "${length(var.listener_arns)}"
+}
+
+locals {
+  target_group_arn = "${local.generate_target_group_arn ? aws_lb_target_group.default.arn : var.target_group_arn}"
 }
 
 module "default_label" {
@@ -13,9 +18,6 @@ module "default_label" {
   tags       = "${var.tags}"
 }
 
-locals {
-  target_group_arn = "${local.generate_target_group_arn ? aws_lb_target_group.default.arn : var.target_group_arn}"
-}
 
 resource "aws_lb_target_group" "default" {
   count       = "${local.generate_target_group_arn}"
@@ -42,7 +44,7 @@ resource "aws_lb_target_group" "default" {
 }
 
 resource "aws_lb_listener_rule" "default" {
-  count        = "${length(var.listener_arns)}"
+  count        = "${local.num_listeners}"
   listener_arn = "${var.listener_arns[count.index]}"
   priority     = "${var.priority+var.listener_arns[count.index]}"
 
