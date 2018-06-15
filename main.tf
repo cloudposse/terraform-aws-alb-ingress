@@ -52,11 +52,6 @@ resource "aws_lb_listener_rule" "default" {
     target_group_arn = "${local.target_group_arn}"
   }
 
-//  condition {
-//    field  = "host-header"
-//    values = ["${var.hosts}"]
-//  }
-
   condition {
     field  = "path-pattern"
     values = ["${var.paths}"]
