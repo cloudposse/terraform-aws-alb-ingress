@@ -1,4 +1,4 @@
-``![Cloud Posse](https://cloudposse.com/logo-300x69.png)
+![Cloud Posse](https://cloudposse.com/logo-300x69.png)
 
 # terraform-aws-alb-ingress [![Build Status](https://travis-ci.org/cloudposse/terraform-aws-alb-ingress.svg?branch=master)](https://travis-ci.org/cloudposse/terraform-aws-alb-ingress) [![Slack Community](https://slack.cloudposse.com/badge.svg)](https://slack.cloudposse.com)
 
