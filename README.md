@@ -60,8 +60,10 @@ module "blog_service" {
 | `namespace`                        |      ``         | Namespace (e.g. `cp` or `cloudposse`)                                            |   Yes    |
 | `stage`                            |      ``         | Stage (e.g. `prod`, `dev`, `staging`)                                            |   Yes    |
 | `name`                             |      ``         | Name  (e.g. `app` or `cluster`)                                                  |   Yes    |
+| `vpc_id`                           |      ``         | The VPC ID where generated ALB target group (if target_group_arn not set)        |   Yes    |
 | `target_group_arn`                 |      ``         | ALB target group ARN, if this is an empty string a new one will be generated     |    No    |
 | `listener_arns`                    |     `[]`        | A list of ALB listener ARNs to attach ALB listener rule to                       |    No    |
+| `listener_arns_count`              |      `0`        | The number of elements in the listener_arns list                                 |    No    |
 | `deregistration_delay`             |     `15`        | The amount of time to wait in seconds while deregistering target                 |    No    |
 | `health_check_path`                |     `/`         | The destination for the health check request                                     |    No    |
 | `health_check_timeout`             |     `10`        | The amount of time to wait in seconds before failing a health check request      |    No    |
@@ -72,9 +74,8 @@ module "blog_service" {
 | `priority`                         |     `100`       | The priority for the rule between 1 and 50000 (1 being highest priority)         |    No    |
 | `port`                             |     `80`        | The port for generated ALB target group (if target_group_arn not set)            |    No    |
 | `protocol`                         |    `HTTP`       | The protocol for generated ALB target group (if target_group_arn not set)        |    No    |
-| `vpc_id`                           |      ``         | The VPC ID where generated ALB target group (if target_group_arn not set)        |    No    |
-| `paths`                            |     `[]`        | Path pattern to match (a maximum of 1 can be defined)                            |    No    |
-| `hosts`                            |     `[]`        | Hosts to match in Hosts header                                                   |    No    |
+| `paths`                            |     `[]`        | Path pattern to match (a maximum of 1 can be defined), required if hosts not set |    No    |
+| `hosts`                            |     `[]`        | Hosts to match in Hosts header, required if paths not set                        |    No    |
 | `attributes`                       |     `[]`        | Additional attributes (e.g. `1`)                                                 |    No    |
 | `tags`                             |     `{}`        | Additional tags  (e.g. `map("BusinessUnit","XYZ")`                               |    No    |
 | `delimiter`                        |     `-`         | Delimiter to be used between `namespace`, `stage`, `name` and `attributes`       |    No    |
