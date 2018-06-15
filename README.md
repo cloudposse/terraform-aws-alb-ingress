@@ -91,7 +91,7 @@ module "blog_service" {
 
 **Got a question?**
 
-File a GitHub [issue](https://github.com/cloudposse/default-backend/issues), send us an [email](mailto:hello@cloudposse.com) or reach out to us on [Slack](https://slack.cloudposse.com).
+File a GitHub [issue](https://github.com/cloudposse/terraform-aws-alb-ingress/issues), send us an [email](mailto:hello@cloudposse.com) or reach out to us on [Slack](https://slack.cloudposse.com).
 
 ## Contributing
 
