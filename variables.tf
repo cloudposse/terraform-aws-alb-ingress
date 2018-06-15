@@ -116,7 +116,6 @@ variable "target_type" {
 
 variable "vpc_id" {
   type        = "string"
-  default     = ""
   description = "The VPC ID where generated ALB target group will be provisioned (if target_group_arn not set)"
 }
 
