@@ -1,12 +1,15 @@
 variable "namespace" {
+  type        = "string"
   description = "Namespace, which could be your organization name, e.g. `cp` or `cloudposse`"
 }
 
 variable "stage" {
+  type        = "string"
   description = "Stage, e.g. `prod`, `staging`, `dev`, or `test`"
 }
 
 variable "name" {
+  type        = "string"
   description = "Solution name, e.g. `app`"
 }
 
@@ -29,6 +32,7 @@ variable "tags" {
 }
 
 variable "target_group_arn" {
+  type        = "string"
   default     = ""
   description = "ALB target group ARN, if this is an empty string a new one will be generated"
 }
@@ -40,41 +44,49 @@ variable "listener_arns" {
 }
 
 variable "listener_arns_len" {
+  type        = "string"
   default     = "0"
   description = "The number of ARNs in listener_arns, this is necessary to work around a limitation in Terraform where counts cannot be computed"
 }
 
 variable "deregistration_delay" {
+  type        = "string"
   default     = "15"
   description = "The amount of time to wait in seconds while deregistering target"
 }
 
 variable "health_check_path" {
+  type        = "string"
   default     = "/"
   description = "The destination for the health check request"
 }
 
 variable "health_check_timeout" {
+  type        = "string"
   default     = "10"
   description = "The amount of time to wait in seconds before failing a health check request"
 }
 
 variable "health_check_healthy_threshold" {
+  type        = "string"
   default     = "2"
   description = "The number of consecutive health checks successes required before healthy"
 }
 
 variable "health_check_unhealthy_threshold" {
+  type        = "string"
   default     = "2"
   description = "The number of consecutive health check failures required before unhealthy"
 }
 
 variable "health_check_interval" {
+  type        = "string"
   default     = "15"
   description = "The duration in seconds in between health checks"
 }
 
 variable "health_check_matcher" {
+  type        = "string"
   default     = "200-399"
   description = "The HTTP response codes to indicate a healthy check"
 }
@@ -111,11 +123,11 @@ variable "vpc_id" {
 variable "hosts" {
   type        = "list"
   default     = []
-  description = "Hosts to match in Hosts header"
+  description = "Hosts to match in Hosts header, at least one of hosts or paths must be set"
 }
 
 variable "paths" {
   type        = "list"
   default     = []
-  description = "Path pattern to match (a maximum of 1 can be defined)"
+  description = "Path pattern to match (a maximum of 1 can be defined), at least one of hosts or paths must be set"
 }
