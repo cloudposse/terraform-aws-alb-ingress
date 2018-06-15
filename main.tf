@@ -17,7 +17,6 @@ module "default_label" {
   tags       = "${var.tags}"
 }
 
-
 resource "aws_lb_target_group" "default" {
   count       = "${local.generate_target_group_arn}"
   name        = "${module.default_label.id}"
@@ -42,14 +41,51 @@ resource "aws_lb_target_group" "default" {
   }
 }
 
-resource "aws_lb_listener_rule" "default" {
-  count        = "${length(var.listener_arns)}"
+resource "aws_lb_listener_rule" "paths" {
+  count        = "${coalescelist(var.paths, var.hosts) == var.hosts ? length(var.listener_arns) : 0}"
   listener_arn = "${var.listener_arns[count.index]}"
   priority     = "${var.priority + count.index}"
 
   action {
     type             = "forward"
     target_group_arn = "${local.target_group_arn}"
+  }
+
+  condition {
+    field  = "path-pattern"
+    values = ["${var.paths}"]
+  }
+}
+
+resource "aws_lb_listener_rule" "hosts" {
+  count        = "${coalescelist(var.paths, var.hosts) == var.paths ? length(var.listener_arns) : 0}"
+  listener_arn = "${var.listener_arns[count.index]}"
+  priority     = "${var.priority + count.index}"
+
+  action {
+    type             = "forward"
+    target_group_arn = "${local.target_group_arn}"
+  }
+
+  condition {
+    field  = "host-header"
+    values = ["${var.hosts}"]
+  }
+}
+
+resource "aws_lb_listener_rule" "hosts_paths" {
+  count        = "${coalescelist(var.paths, var.hosts) == false ? length(var.listener_arns) : 0}"
+  listener_arn = "${var.listener_arns[count.index]}"
+  priority     = "${var.priority + count.index}"
+
+  action {
+    type             = "forward"
+    target_group_arn = "${local.target_group_arn}"
+  }
+
+  condition {
+    field  = "host-header"
+    values = ["${var.hosts}"]
   }
 
   condition {

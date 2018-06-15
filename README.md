@@ -73,7 +73,8 @@ module "blog_service" {
 | `port`                             |     `80`        | The port for generated ALB target group (if target_group_arn not set)            |    No    |
 | `protocol`                         |    `HTTP`       | The protocol for generated ALB target group (if target_group_arn not set)        |    No    |
 | `vpc_id`                           |      ``         | The VPC ID where generated ALB target group (if target_group_arn not set)        |    No    |
-| `paths`                            |   `["/*"]`      | Path pattern to match (a maximum of 1 can be defined)                            |    No    |
+| `paths`                            |     `[]`        | Path pattern to match (a maximum of 1 can be defined)                            |    No    |
+| `hosts`                            |     `[]`        | Hosts to match in Hosts header                                                   |    No    |
 | `attributes`                       |     `[]`        | Additional attributes (e.g. `1`)                                                 |    No    |
 | `tags`                             |     `{}`        | Additional tags  (e.g. `map("BusinessUnit","XYZ")`                               |    No    |
 | `delimiter`                        |     `-`         | Delimiter to be used between `namespace`, `stage`, `name` and `attributes`       |    No    |
