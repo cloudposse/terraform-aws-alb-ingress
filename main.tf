@@ -42,7 +42,7 @@ resource "aws_lb_target_group" "default" {
 }
 
 resource "aws_lb_listener_rule" "paths" {
-  count        = "${length(var.paths) > 0 && length(var.hosts) == 0 ? length(var.listener_arns) : 0}"
+  count        = "${length(var.paths) > 0 && length(var.hosts) == 0 ? var.listener_arns_len : 0}"
   listener_arn = "${var.listener_arns[count.index]}"
   priority     = "${var.priority + count.index}"
 
@@ -58,7 +58,7 @@ resource "aws_lb_listener_rule" "paths" {
 }
 
 resource "aws_lb_listener_rule" "hosts" {
-  count        = "${length(var.hosts) > 0 && length(var.paths) == 0 ? length(var.listener_arns) : 0}"
+  count        = "${length(var.hosts) > 0 && length(var.paths) == 0 ? var.listener_arns_len : 0}"
   listener_arn = "${var.listener_arns[count.index]}"
   priority     = "${var.priority + count.index}"
 
@@ -74,7 +74,7 @@ resource "aws_lb_listener_rule" "hosts" {
 }
 
 resource "aws_lb_listener_rule" "hosts_paths" {
-  count        = "${length(var.paths) > 0 && length(var.hosts) > 0 ? length(var.listener_arns) : 0}"
+  count        = "${length(var.paths) > 0 && length(var.hosts) > 0 ? var.listener_arns_len : 0}"
   listener_arn = "${var.listener_arns[count.index]}"
   priority     = "${var.priority + count.index}"
 

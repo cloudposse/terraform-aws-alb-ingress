@@ -39,6 +39,11 @@ variable "listener_arns" {
   description = "A list of ALB listener ARNs to attach ALB listener rule to"
 }
 
+variable "listener_arns_len" {
+  default     = "0"
+  description = "The number of ARNs in listener_arns, this is necessary to work around a limitation in Terraform where counts cannot be computed"
+}
+
 variable "deregistration_delay" {
   default     = "15"
   description = "The amount of time to wait in seconds while deregistering target"
