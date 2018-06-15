@@ -43,7 +43,7 @@ variable "listener_arns" {
   description = "A list of ALB listener ARNs to attach ALB listener rule to"
 }
 
-variable "listener_arns_len" {
+variable "listener_arns_count" {
   type        = "string"
   default     = "0"
   description = "The number of ARNs in listener_arns, this is necessary to work around a limitation in Terraform where counts cannot be computed"
