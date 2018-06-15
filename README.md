@@ -62,6 +62,7 @@ module "blog_service" {
 | `name`                             |      ``         | Name  (e.g. `app` or `cluster`)                                                  |   Yes    |
 | `target_group_arn`                 |      ``         | ALB target group ARN, if this is an empty string a new one will be generated     |    No    |
 | `listener_arns`                    |     `[]`        | A list of ALB listener ARNs to attach ALB listener rule to                       |    No    |
+| `listener_arns_len`                |      `0`        | The number of elements in the listener_arns list                                 |    No    |
 | `deregistration_delay`             |     `15`        | The amount of time to wait in seconds while deregistering target                 |    No    |
 | `health_check_path`                |     `/`         | The destination for the health check request                                     |    No    |
 | `health_check_timeout`             |     `10`        | The amount of time to wait in seconds before failing a health check request      |    No    |
