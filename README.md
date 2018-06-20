@@ -5,7 +5,7 @@
 # terraform-aws-alb-ingress  [![Build Status](https://travis-ci.org/cloudposse/terraform-aws-alb-ingress.svg?branch=master)](https://travis-ci.org/cloudposse/terraform-aws-alb-ingress) [![Latest Release](https://img.shields.io/github/release/cloudposse/terraform-aws-alb-ingress.svg)](https://github.com/cloudposse/terraform-aws-alb-ingress/releases) [![Slack Community](https://slack.cloudposse.com/badge.svg)](https://slack.cloudposse.com)
 
 
-Terraform module to create an ALB, default ALB listener(s), and a default ALB target and related security groups.
+Terraform module to provision an HTTP style ingress based on hostname and/or path.
 
 
 ---
@@ -23,17 +23,17 @@ It's 100% Open Source and licensed under the [APACHE2](LICENSE).
 Include this module in your existing terraform code:
 
 ```hcl
-module "alb" {
-  source             = "git::https://github.com/cloudposse/terraform-aws-alb.git?ref=tags/0.2.0"
+module "alb_ingress" {
+  source              = "git::https://github.com/cloudposse/terraform-aws-alb-ingress.git?ref=tags/0.2.0"
   namespace          = "eg"
   name               = "app"
   stage              = "dev"
 
-  vpc_id             = "xxxxxxxxx"
-  ip_address_type    = "ipv4"
-
-  subnet_ids         = ["xxxxxxxx", "xxxxxxxx"]
-  access_logs_region = "us-west-2"
+  vpc_id              = "xxxxxxxx"
+  listener_arns       = ["xxxxxx", "yyyyyyy"]
+  listener_arns_count = "2"
+  health_check_path   = "/healthz"
+  paths               = ["/*"]
 }
 ```
 
