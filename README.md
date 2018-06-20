@@ -84,7 +84,7 @@ Available targets:
 
 | Name | Description |
 |------|-------------|
-| target_group_arn |  |
+| target_group_arn | ALB Target group ARN |
 
 
 
