@@ -6,6 +6,10 @@ locals {
   target_group_arn = "${local.generate_target_group_arn ? aws_lb_target_group.default.arn : var.target_group_arn}"
 }
 
+data "aws_lb_target_group" "default" {
+  arn = "${local.target_group_arn}"
+}
+
 module "default_label" {
   source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.1.3"
   enabled    = "${local.generate_target_group_arn}"
