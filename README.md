@@ -85,6 +85,8 @@ Available targets:
 | Name | Description |
 |------|-------------|
 | target_group_arn | ALB Target group ARN |
+| target_group_arn_suffix | ALB Target group ARN suffix |
+| target_group_name | ALB Target group name |
 
 
 
