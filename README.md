@@ -19,6 +19,10 @@ It's 100% Open Source and licensed under the [APACHE2](LICENSE).
 
 
 
+
+
+
+
 ## Usage
 
 Include this module in your existing terraform code:
@@ -176,6 +180,13 @@ See [LICENSE](LICENSE) for full details.
     KIND, either express or implied.  See the License for the
     specific language governing permissions and limitations
     under the License.
+
+
+
+
+
+
+
 
 
 ## Trademarks
