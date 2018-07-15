@@ -19,6 +19,10 @@ It's 100% Open Source and licensed under the [APACHE2](LICENSE).
 
 
 
+
+
+
+
 ## Usage
 
 Include this module in your existing terraform code:
@@ -78,6 +82,7 @@ Available targets:
 | stage | Stage, e.g. `prod`, `staging`, `dev`, or `test` | string | - | yes |
 | tags | Additional tags (e.g. `map(`BusinessUnit`,`XYZ`) | map | `<map>` | no |
 | target_group_arn | ALB target group ARN, if this is an empty string a new one will be generated | string | `` | no |
+| target_group_name | Name of ALB target group if it is generated. | string | `` | no |
 | target_type |  | string | `ip` | no |
 | vpc_id | The VPC ID where generated ALB target group will be provisioned (if target_group_arn not set) | string | - | yes |
 
@@ -176,6 +181,13 @@ See [LICENSE](LICENSE) for full details.
     KIND, either express or implied.  See the License for the
     specific language governing permissions and limitations
     under the License.
+
+
+
+
+
+
+
 
 
 ## Trademarks

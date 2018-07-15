@@ -23,7 +23,7 @@ module "default_label" {
 
 resource "aws_lb_target_group" "default" {
   count       = "${local.generate_target_group_arn}"
-  name        = "${module.default_label.id}"
+  name        = "${var.target_group_name}"
   port        = "${var.port}"
   protocol    = "${var.protocol}"
   vpc_id      = "${var.vpc_id}"
