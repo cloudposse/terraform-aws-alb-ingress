@@ -40,7 +40,7 @@ variable "target_group_arn" {
 variable "target_group_name" {
   type        = "string"
   default     = ""
-  description = "Name of ALB target group if it is generated."
+  description = "Name of ALB target group if it is generated (maximum of 32 characters)"
 }
 
 variable "listener_arns" {
