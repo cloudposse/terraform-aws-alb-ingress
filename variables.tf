@@ -37,12 +37,6 @@ variable "target_group_arn" {
   description = "ALB target group ARN, if this is an empty string a new one will be generated"
 }
 
-variable "target_group_name" {
-  type        = "string"
-  default     = ""
-  description = "Name of ALB target group if it is generated (maximum of 32 characters)"
-}
-
 variable "listener_arns" {
   type        = "list"
   default     = []
