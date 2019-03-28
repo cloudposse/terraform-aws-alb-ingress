@@ -46,7 +46,7 @@ variable "listener_arns" {
 variable "listener_arns_count" {
   type        = "string"
   default     = "0"
-  description = "The number of ARNs in listener_arns, this is necessary to work around a limitation in Terraform where counts cannot be computed"
+  description = "The number of ARNs in `listener_arns`. This is necessary to work around a limitation in Terraform where counts cannot be computed"
 }
 
 variable "deregistration_delay" {
@@ -129,4 +129,16 @@ variable "paths" {
   type        = "list"
   default     = []
   description = "Path pattern to match (a maximum of 1 can be defined), at least one of hosts or paths must be set"
+}
+
+variable "authentication_enabled" {
+  type        = "string"
+  default     = "false"
+  description = "Whether to enable authentication action for ALB listener to authenticate users with Cognito or OIDC"
+}
+
+variable "authentication_action" {
+  type        = "map"
+  default     = {}
+  description = "Authentication action to be placed in front of all other ALB listener actions to authenticate users with Cognito or OIDC. Required when `authentication_enabled=true`"
 }
