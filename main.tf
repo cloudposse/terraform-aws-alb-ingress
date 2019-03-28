@@ -12,7 +12,7 @@ data "aws_lb_target_group" "default" {
 
 module "default_label" {
   enabled    = "${local.create_target_group}"
-  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.1.3"
+  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.2.1"
   attributes = "${var.attributes}"
   delimiter  = "${var.delimiter}"
   name       = "${var.name}"
