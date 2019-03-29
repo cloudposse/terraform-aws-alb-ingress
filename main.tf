@@ -1,9 +1,7 @@
 locals {
-  create_target_group = "${var.target_group_arn == "" ? "true" : "false"}"
-}
-
-locals {
-  target_group_arn = "${local.create_target_group == "true" ? aws_lb_target_group.default.arn : var.target_group_arn}"
+  target_group_enabled   = "${var.target_group_arn == "" ? "true" : "false"}"
+  target_group_arn       = "${local.target_group_enabled == "true" ? aws_lb_target_group.default.arn : var.target_group_arn}"
+  authentication_enabled = "${var.authentication_enabled == "true" ? true : false}"
 }
 
 data "aws_lb_target_group" "default" {
@@ -11,8 +9,8 @@ data "aws_lb_target_group" "default" {
 }
 
 module "default_label" {
-  enabled    = "${local.create_target_group}"
-  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.1.3"
+  enabled    = "${local.target_group_enabled}"
+  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.2.1"
   attributes = "${var.attributes}"
   delimiter  = "${var.delimiter}"
   name       = "${var.name}"
@@ -22,7 +20,7 @@ module "default_label" {
 }
 
 resource "aws_lb_target_group" "default" {
-  count       = "${local.create_target_group == "true" ? 1 : 0}"
+  count       = "${local.target_group_enabled == "true" ? 1 : 0}"
   name        = "${module.default_label.id}"
   port        = "${var.port}"
   protocol    = "${var.protocol}"
@@ -45,14 +43,95 @@ resource "aws_lb_target_group" "default" {
   }
 }
 
-resource "aws_lb_listener_rule" "paths" {
-  count        = "${length(var.paths) > 0 && length(var.hosts) == 0 ? var.listener_arns_count : 0}"
+resource "aws_lb_listener_rule" "paths_no_authentication" {
+  count        = "${length(var.paths) > 0 && length(var.hosts) == 0 && local.authentication_enabled == false ? var.listener_arns_count : 0}"
   listener_arn = "${var.listener_arns[count.index]}"
   priority     = "${var.priority + count.index}"
 
-  action {
-    type             = "forward"
-    target_group_arn = "${local.target_group_arn}"
+  action = [
+    {
+      type             = "forward"
+      target_group_arn = "${local.target_group_arn}"
+    },
+  ]
+
+  condition {
+    field  = "path-pattern"
+    values = ["${var.paths}"]
+  }
+}
+
+resource "aws_lb_listener_rule" "paths_with_authentication" {
+  count        = "${length(var.paths) > 0 && length(var.hosts) == 0 && local.authentication_enabled == true ? var.listener_arns_count : 0}"
+  listener_arn = "${var.listener_arns[count.index]}"
+  priority     = "${var.priority + count.index}"
+
+  action = [
+    "${var.authentication_action}",
+    {
+      type             = "forward"
+      target_group_arn = "${local.target_group_arn}"
+    },
+  ]
+
+  condition {
+    field  = "path-pattern"
+    values = ["${var.paths}"]
+  }
+}
+
+resource "aws_lb_listener_rule" "hosts_no_authentication" {
+  count        = "${length(var.hosts) > 0 && length(var.paths) == 0 && local.authentication_enabled == false ? var.listener_arns_count : 0}"
+  listener_arn = "${var.listener_arns[count.index]}"
+  priority     = "${var.priority + count.index}"
+
+  action = [
+    {
+      type             = "forward"
+      target_group_arn = "${local.target_group_arn}"
+    },
+  ]
+
+  condition {
+    field  = "host-header"
+    values = ["${var.hosts}"]
+  }
+}
+
+resource "aws_lb_listener_rule" "hosts_with_authentication" {
+  count        = "${length(var.hosts) > 0 && length(var.paths) == 0 && local.authentication_enabled == true ? var.listener_arns_count : 0}"
+  listener_arn = "${var.listener_arns[count.index]}"
+  priority     = "${var.priority + count.index}"
+
+  action = [
+    "${var.authentication_action}",
+    {
+      type             = "forward"
+      target_group_arn = "${local.target_group_arn}"
+    },
+  ]
+
+  condition {
+    field  = "host-header"
+    values = ["${var.hosts}"]
+  }
+}
+
+resource "aws_lb_listener_rule" "hosts_paths_no_authentication" {
+  count        = "${length(var.paths) > 0 && length(var.hosts) > 0 && local.authentication_enabled == false ? var.listener_arns_count : 0}"
+  listener_arn = "${var.listener_arns[count.index]}"
+  priority     = "${var.priority + count.index}"
+
+  action = [
+    {
+      type             = "forward"
+      target_group_arn = "${local.target_group_arn}"
+    },
+  ]
+
+  condition {
+    field  = "host-header"
+    values = ["${var.hosts}"]
   }
 
   condition {
@@ -61,31 +140,18 @@ resource "aws_lb_listener_rule" "paths" {
   }
 }
 
-resource "aws_lb_listener_rule" "hosts" {
-  count        = "${length(var.hosts) > 0 && length(var.paths) == 0 ? var.listener_arns_count : 0}"
+resource "aws_lb_listener_rule" "hosts_paths_with_authentication" {
+  count        = "${length(var.paths) > 0 && length(var.hosts) > 0 && local.authentication_enabled == true ? var.listener_arns_count : 0}"
   listener_arn = "${var.listener_arns[count.index]}"
   priority     = "${var.priority + count.index}"
 
-  action {
-    type             = "forward"
-    target_group_arn = "${local.target_group_arn}"
-  }
-
-  condition {
-    field  = "host-header"
-    values = ["${var.hosts}"]
-  }
-}
-
-resource "aws_lb_listener_rule" "hosts_paths" {
-  count        = "${length(var.paths) > 0 && length(var.hosts) > 0 ? var.listener_arns_count : 0}"
-  listener_arn = "${var.listener_arns[count.index]}"
-  priority     = "${var.priority + count.index}"
-
-  action {
-    type             = "forward"
-    target_group_arn = "${local.target_group_arn}"
-  }
+  action = [
+    "${var.authentication_action}",
+    {
+      type             = "forward"
+      target_group_arn = "${local.target_group_arn}"
+    },
+  ]
 
   condition {
     field  = "host-header"
