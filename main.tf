@@ -1,7 +1,6 @@
 locals {
-  target_group_enabled   = "${var.target_group_arn == "" ? "true" : "false"}"
-  target_group_arn       = "${local.target_group_enabled == "true" ? aws_lb_target_group.default.arn : var.target_group_arn}"
-  authentication_enabled = "${var.authentication_enabled == "true" ? true : false}"
+  target_group_enabled = "${var.target_group_arn == "" ? "true" : "false"}"
+  target_group_arn     = "${local.target_group_enabled == "true" ? aws_lb_target_group.default.arn : var.target_group_arn}"
 }
 
 data "aws_lb_target_group" "default" {
@@ -44,7 +43,7 @@ resource "aws_lb_target_group" "default" {
 }
 
 resource "aws_lb_listener_rule" "paths_no_authentication" {
-  count        = "${length(var.paths) > 0 && length(var.hosts) == 0 && local.authentication_enabled == false ? var.listener_arns_count : 0}"
+  count        = "${length(var.paths) > 0 && length(var.hosts) == 0 ? var.listener_arns_count : 0}"
   listener_arn = "${var.listener_arns[count.index]}"
   priority     = "${var.priority + count.index}"
 
@@ -62,9 +61,9 @@ resource "aws_lb_listener_rule" "paths_no_authentication" {
 }
 
 resource "aws_lb_listener_rule" "paths_with_authentication" {
-  count        = "${length(var.paths) > 0 && length(var.hosts) == 0 && local.authentication_enabled == true ? var.listener_arns_count : 0}"
+  count        = "${length(var.paths_with_authentication) > 0 && length(var.hosts_with_authentication) == 0 ? var.listener_arns_count : 0}"
   listener_arn = "${var.listener_arns[count.index]}"
-  priority     = "${var.priority + count.index}"
+  priority     = "${var.priority_with_authentication + count.index}"
 
   action = [
     "${var.authentication_action}",
@@ -76,12 +75,12 @@ resource "aws_lb_listener_rule" "paths_with_authentication" {
 
   condition {
     field  = "path-pattern"
-    values = ["${var.paths}"]
+    values = ["${var.paths_with_authentication}"]
   }
 }
 
 resource "aws_lb_listener_rule" "hosts_no_authentication" {
-  count        = "${length(var.hosts) > 0 && length(var.paths) == 0 && local.authentication_enabled == false ? var.listener_arns_count : 0}"
+  count        = "${length(var.hosts) > 0 && length(var.paths) == 0 ? var.listener_arns_count : 0}"
   listener_arn = "${var.listener_arns[count.index]}"
   priority     = "${var.priority + count.index}"
 
@@ -99,9 +98,9 @@ resource "aws_lb_listener_rule" "hosts_no_authentication" {
 }
 
 resource "aws_lb_listener_rule" "hosts_with_authentication" {
-  count        = "${length(var.hosts) > 0 && length(var.paths) == 0 && local.authentication_enabled == true ? var.listener_arns_count : 0}"
+  count        = "${length(var.hosts_with_authentication) > 0 && length(var.paths_with_authentication) == 0 ? var.listener_arns_count : 0}"
   listener_arn = "${var.listener_arns[count.index]}"
-  priority     = "${var.priority + count.index}"
+  priority     = "${var.priority_with_authentication + count.index}"
 
   action = [
     "${var.authentication_action}",
@@ -113,12 +112,12 @@ resource "aws_lb_listener_rule" "hosts_with_authentication" {
 
   condition {
     field  = "host-header"
-    values = ["${var.hosts}"]
+    values = ["${var.hosts_with_authentication}"]
   }
 }
 
 resource "aws_lb_listener_rule" "hosts_paths_no_authentication" {
-  count        = "${length(var.paths) > 0 && length(var.hosts) > 0 && local.authentication_enabled == false ? var.listener_arns_count : 0}"
+  count        = "${length(var.paths) > 0 && length(var.hosts) > 0 ? var.listener_arns_count : 0}"
   listener_arn = "${var.listener_arns[count.index]}"
   priority     = "${var.priority + count.index}"
 
@@ -141,9 +140,9 @@ resource "aws_lb_listener_rule" "hosts_paths_no_authentication" {
 }
 
 resource "aws_lb_listener_rule" "hosts_paths_with_authentication" {
-  count        = "${length(var.paths) > 0 && length(var.hosts) > 0 && local.authentication_enabled == true ? var.listener_arns_count : 0}"
+  count        = "${length(var.paths_with_authentication) > 0 && length(var.hosts_with_authentication) > 0 ? var.listener_arns_count : 0}"
   listener_arn = "${var.listener_arns[count.index]}"
-  priority     = "${var.priority + count.index}"
+  priority     = "${var.priority_with_authentication + count.index}"
 
   action = [
     "${var.authentication_action}",
@@ -155,11 +154,11 @@ resource "aws_lb_listener_rule" "hosts_paths_with_authentication" {
 
   condition {
     field  = "host-header"
-    values = ["${var.hosts}"]
+    values = ["${var.hosts_with_authentication}"]
   }
 
   condition {
     field  = "path-pattern"
-    values = ["${var.paths}"]
+    values = ["${var.paths_with_authentication}"]
   }
 }

@@ -34,13 +34,13 @@ variable "tags" {
 variable "target_group_arn" {
   type        = "string"
   default     = ""
-  description = "ALB target group ARN, if this is an empty string a new one will be generated"
+  description = "ALB target group ARN. If this is an empty string, a new one will be generated"
 }
 
 variable "listener_arns" {
   type        = "list"
   default     = []
-  description = "A list of ALB listener ARNs to attach ALB listener rule to"
+  description = "A list of ALB listener ARNs to attach ALB listener rules to"
 }
 
 variable "listener_arns_count" {
@@ -94,7 +94,13 @@ variable "health_check_matcher" {
 variable "priority" {
   type        = "string"
   default     = "100"
-  description = "The priority for the rule between 1 and 50000 (1 being highest priority)"
+  description = "The priority for the rules, between 1 and 50000 (1 being highest priority). Must be different from `priority_with_authentication` since a listener can't have multiple rules with the same priority"
+}
+
+variable "priority_with_authentication" {
+  type        = "string"
+  default     = "300"
+  description = "The priority for the rules with authentication, between 1 and 50000 (1 being highest priority). Must be different from `priority` since a listener can't have multiple rules with the same priority"
 }
 
 variable "port" {
@@ -125,20 +131,26 @@ variable "hosts" {
   description = "Hosts to match in Hosts header, at least one of hosts or paths must be set"
 }
 
+variable "hosts_with_authentication" {
+  type        = "list"
+  default     = []
+  description = "Hosts with authentication to match in Hosts header, at least one of hosts or paths must be set"
+}
+
 variable "paths" {
   type        = "list"
   default     = []
   description = "Path pattern to match (a maximum of 1 can be defined), at least one of hosts or paths must be set"
 }
 
-variable "authentication_enabled" {
-  type        = "string"
-  default     = "false"
-  description = "Whether to enable authentication action for ALB listener to authenticate users with Cognito or OIDC"
+variable "paths_with_authentication" {
+  type        = "list"
+  default     = []
+  description = "Path pattern with authentication to match (a maximum of 1 can be defined), at least one of hosts or paths must be set"
 }
 
 variable "authentication_action" {
   type        = "map"
   default     = {}
-  description = "Authentication action to be placed in front of all other ALB listener actions to authenticate users with Cognito or OIDC. Required when `authentication_enabled=true`"
+  description = "Authentication action to be placed in front of all other ALB listener actions to authenticate users with Cognito or OIDC. Required when `hosts_with_authentication` or `paths_with_authentication` are provided"
 }
