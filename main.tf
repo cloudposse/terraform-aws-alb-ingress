@@ -1,7 +1,6 @@
 locals {
-  target_group_enabled   = "${var.target_group_arn == "" ? "true" : "false"}"
-  target_group_arn       = "${local.target_group_enabled == "true" ? aws_lb_target_group.default.arn : var.target_group_arn}"
-  authentication_enabled = "${var.authentication_enabled == "true" ? true : false}"
+  target_group_enabled = "${var.target_group_arn == "" ? "true" : "false"}"
+  target_group_arn     = "${local.target_group_enabled == "true" ? aws_lb_target_group.default.arn : var.target_group_arn}"
 }
 
 data "aws_lb_target_group" "default" {
@@ -43,10 +42,10 @@ resource "aws_lb_target_group" "default" {
   }
 }
 
-resource "aws_lb_listener_rule" "paths_no_authentication" {
-  count        = "${length(var.paths) > 0 && length(var.hosts) == 0 && local.authentication_enabled == false ? var.listener_arns_count : 0}"
+resource "aws_lb_listener_rule" "unauthenticated_paths" {
+  count        = "${length(var.unauthenticated_paths) > 0 && length(var.unauthenticated_hosts) == 0 ? var.listener_arns_count : 0}"
   listener_arn = "${var.listener_arns[count.index]}"
-  priority     = "${var.priority + count.index}"
+  priority     = "${var.unauthenticated_priority + count.index}"
 
   action = [
     {
@@ -57,14 +56,14 @@ resource "aws_lb_listener_rule" "paths_no_authentication" {
 
   condition {
     field  = "path-pattern"
-    values = ["${var.paths}"]
+    values = ["${var.unauthenticated_paths}"]
   }
 }
 
-resource "aws_lb_listener_rule" "paths_with_authentication" {
-  count        = "${length(var.paths) > 0 && length(var.hosts) == 0 && local.authentication_enabled == true ? var.listener_arns_count : 0}"
+resource "aws_lb_listener_rule" "authenticated_paths" {
+  count        = "${length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) == 0 ? var.listener_arns_count : 0}"
   listener_arn = "${var.listener_arns[count.index]}"
-  priority     = "${var.priority + count.index}"
+  priority     = "${var.authenticated_priority + count.index}"
 
   action = [
     "${var.authentication_action}",
@@ -76,14 +75,14 @@ resource "aws_lb_listener_rule" "paths_with_authentication" {
 
   condition {
     field  = "path-pattern"
-    values = ["${var.paths}"]
+    values = ["${var.authenticated_paths}"]
   }
 }
 
-resource "aws_lb_listener_rule" "hosts_no_authentication" {
-  count        = "${length(var.hosts) > 0 && length(var.paths) == 0 && local.authentication_enabled == false ? var.listener_arns_count : 0}"
+resource "aws_lb_listener_rule" "unauthenticated_hosts" {
+  count        = "${length(var.unauthenticated_hosts) > 0 && length(var.unauthenticated_paths) == 0 ? var.listener_arns_count : 0}"
   listener_arn = "${var.listener_arns[count.index]}"
-  priority     = "${var.priority + count.index}"
+  priority     = "${var.unauthenticated_priority + count.index}"
 
   action = [
     {
@@ -94,56 +93,14 @@ resource "aws_lb_listener_rule" "hosts_no_authentication" {
 
   condition {
     field  = "host-header"
-    values = ["${var.hosts}"]
+    values = ["${var.unauthenticated_hosts}"]
   }
 }
 
-resource "aws_lb_listener_rule" "hosts_with_authentication" {
-  count        = "${length(var.hosts) > 0 && length(var.paths) == 0 && local.authentication_enabled == true ? var.listener_arns_count : 0}"
+resource "aws_lb_listener_rule" "authenticated_hosts" {
+  count        = "${length(var.authenticated_hosts) > 0 && length(var.authenticated_paths) == 0 ? var.listener_arns_count : 0}"
   listener_arn = "${var.listener_arns[count.index]}"
-  priority     = "${var.priority + count.index}"
-
-  action = [
-    "${var.authentication_action}",
-    {
-      type             = "forward"
-      target_group_arn = "${local.target_group_arn}"
-    },
-  ]
-
-  condition {
-    field  = "host-header"
-    values = ["${var.hosts}"]
-  }
-}
-
-resource "aws_lb_listener_rule" "hosts_paths_no_authentication" {
-  count        = "${length(var.paths) > 0 && length(var.hosts) > 0 && local.authentication_enabled == false ? var.listener_arns_count : 0}"
-  listener_arn = "${var.listener_arns[count.index]}"
-  priority     = "${var.priority + count.index}"
-
-  action = [
-    {
-      type             = "forward"
-      target_group_arn = "${local.target_group_arn}"
-    },
-  ]
-
-  condition {
-    field  = "host-header"
-    values = ["${var.hosts}"]
-  }
-
-  condition {
-    field  = "path-pattern"
-    values = ["${var.paths}"]
-  }
-}
-
-resource "aws_lb_listener_rule" "hosts_paths_with_authentication" {
-  count        = "${length(var.paths) > 0 && length(var.hosts) > 0 && local.authentication_enabled == true ? var.listener_arns_count : 0}"
-  listener_arn = "${var.listener_arns[count.index]}"
-  priority     = "${var.priority + count.index}"
+  priority     = "${var.authenticated_priority + count.index}"
 
   action = [
     "${var.authentication_action}",
@@ -155,11 +112,53 @@ resource "aws_lb_listener_rule" "hosts_paths_with_authentication" {
 
   condition {
     field  = "host-header"
-    values = ["${var.hosts}"]
+    values = ["${var.authenticated_hosts}"]
+  }
+}
+
+resource "aws_lb_listener_rule" "unauthenticated_hosts_paths" {
+  count        = "${length(var.unauthenticated_paths) > 0 && length(var.unauthenticated_hosts) > 0 ? var.listener_arns_count : 0}"
+  listener_arn = "${var.listener_arns[count.index]}"
+  priority     = "${var.unauthenticated_priority + count.index}"
+
+  action = [
+    {
+      type             = "forward"
+      target_group_arn = "${local.target_group_arn}"
+    },
+  ]
+
+  condition {
+    field  = "host-header"
+    values = ["${var.unauthenticated_hosts}"]
   }
 
   condition {
     field  = "path-pattern"
-    values = ["${var.paths}"]
+    values = ["${var.unauthenticated_paths}"]
+  }
+}
+
+resource "aws_lb_listener_rule" "authenticated_hosts_paths" {
+  count        = "${length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) > 0 ? var.listener_arns_count : 0}"
+  listener_arn = "${var.listener_arns[count.index]}"
+  priority     = "${var.authenticated_priority + count.index}"
+
+  action = [
+    "${var.authentication_action}",
+    {
+      type             = "forward"
+      target_group_arn = "${local.target_group_arn}"
+    },
+  ]
+
+  condition {
+    field  = "host-header"
+    values = ["${var.authenticated_hosts}"]
+  }
+
+  condition {
+    field  = "path-pattern"
+    values = ["${var.authenticated_paths}"]
   }
 }

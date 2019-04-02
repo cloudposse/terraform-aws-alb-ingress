@@ -34,13 +34,13 @@ variable "tags" {
 variable "target_group_arn" {
   type        = "string"
   default     = ""
-  description = "ALB target group ARN, if this is an empty string a new one will be generated"
+  description = "ALB target group ARN. If this is an empty string, a new one will be generated"
 }
 
 variable "listener_arns" {
   type        = "list"
   default     = []
-  description = "A list of ALB listener ARNs to attach ALB listener rule to"
+  description = "A list of ALB listener ARNs to attach ALB listener rules to"
 }
 
 variable "listener_arns_count" {
@@ -91,22 +91,28 @@ variable "health_check_matcher" {
   description = "The HTTP response codes to indicate a healthy check"
 }
 
-variable "priority" {
+variable "unauthenticated_priority" {
   type        = "string"
   default     = "100"
-  description = "The priority for the rule between 1 and 50000 (1 being highest priority)"
+  description = "The priority for the rules without authentication, between 1 and 50000 (1 being highest priority). Must be different from `authenticated_priority` since a listener can't have multiple rules with the same priority"
+}
+
+variable "authenticated_priority" {
+  type        = "string"
+  default     = "300"
+  description = "The priority for the rules with authentication, between 1 and 50000 (1 being highest priority). Must be different from `unauthenticated_priority` since a listener can't have multiple rules with the same priority"
 }
 
 variable "port" {
   type        = "string"
   default     = "80"
-  description = "The port for generated ALB target group (if target_group_arn not set)"
+  description = "The port for generated ALB target group (if `target_group_arn` not set)"
 }
 
 variable "protocol" {
   type        = "string"
   default     = "HTTP"
-  description = "The protocol for generated ALB target group (if target_group_arn not set)"
+  description = "The protocol for generated ALB target group (if `target_group_arn` not set)"
 }
 
 variable "target_type" {
@@ -116,29 +122,35 @@ variable "target_type" {
 
 variable "vpc_id" {
   type        = "string"
-  description = "The VPC ID where generated ALB target group will be provisioned (if target_group_arn not set)"
+  description = "The VPC ID where generated ALB target group will be provisioned (if `target_group_arn` is not set)"
 }
 
-variable "hosts" {
+variable "unauthenticated_hosts" {
   type        = "list"
   default     = []
-  description = "Hosts to match in Hosts header, at least one of hosts or paths must be set"
+  description = "Unauthenticated hosts to match in Hosts header"
 }
 
-variable "paths" {
+variable "authenticated_hosts" {
   type        = "list"
   default     = []
-  description = "Path pattern to match (a maximum of 1 can be defined), at least one of hosts or paths must be set"
+  description = "Authenticated hosts to match in Hosts header"
 }
 
-variable "authentication_enabled" {
-  type        = "string"
-  default     = "false"
-  description = "Whether to enable authentication action for ALB listener to authenticate users with Cognito or OIDC"
+variable "unauthenticated_paths" {
+  type        = "list"
+  default     = []
+  description = "Unauthenticated path pattern to match (a maximum of 1 can be defined)"
+}
+
+variable "authenticated_paths" {
+  type        = "list"
+  default     = []
+  description = "Authenticated path pattern to match (a maximum of 1 can be defined)"
 }
 
 variable "authentication_action" {
   type        = "map"
   default     = {}
-  description = "Authentication action to be placed in front of all other ALB listener actions to authenticate users with Cognito or OIDC. Required when `authentication_enabled=true`"
+  description = "Authentication action to be placed in front of all other ALB listener actions to authenticate users with Cognito or OIDC. Required when `authenticated_hosts` or `authenticated_paths` are provided"
 }
