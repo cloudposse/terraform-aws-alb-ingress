@@ -30,7 +30,7 @@ locals {
       }]
     }
 
-    "GOOGLE_OIDC" = {
+    "OIDC" = {
       type = "authenticate-oidc"
 
       authenticate_oidc = [{
