@@ -18,39 +18,6 @@ module "default_label" {
   tags       = "${var.tags}"
 }
 
-locals {
-  supported_authentication_actions = {
-    "COGNITO" = {
-      type = "authenticate-cognito"
-
-      authenticate_cognito = [{
-        user_pool_arn       = "${var.authentication_cognito_user_pool_arn}"
-        user_pool_client_id = "${var.authentication_cognito_user_pool_client_id}"
-        user_pool_domain    = "${var.authentication_cognito_user_pool_domain}"
-      }]
-    }
-
-    "OIDC" = {
-      type = "authenticate-oidc"
-
-      authenticate_oidc = [{
-        client_id              = "${var.authentication_oidc_client_id}"
-        client_secret          = "${var.authentication_oidc_client_secret}"
-        issuer                 = "${var.authentication_oidc_issuer}"
-        authorization_endpoint = "${var.authentication_oidc_authorization_endpoint}"
-        token_endpoint         = "${var.authentication_oidc_token_endpoint}"
-        user_info_endpoint     = "${var.authentication_oidc_user_info_endpoint}"
-      }]
-    }
-
-    "NONE" = {
-      type = "none"
-    }
-  }
-
-  authentication_action = "${local.supported_authentication_actions[var.authentication_type]}"
-}
-
 resource "aws_lb_target_group" "default" {
   count       = "${local.target_group_enabled == "true" ? 1 : 0}"
   name        = "${module.default_label.id}"
@@ -93,13 +60,51 @@ resource "aws_lb_listener_rule" "unauthenticated_paths" {
   }
 }
 
-resource "aws_lb_listener_rule" "authenticated_paths" {
-  count        = "${length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) == 0 ? var.authenticated_listener_arns_count : 0}"
+resource "aws_lb_listener_rule" "authenticated_paths_oidc" {
+  count        = "${var.authentication_type == "OIDC" && length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) == 0 ? var.authenticated_listener_arns_count : 0}"
   listener_arn = "${var.authenticated_listener_arns[count.index]}"
   priority     = "${var.authenticated_priority + count.index}"
 
   action = [
-    "${local.authentication_action}",
+    {
+      type = "authenticate-oidc"
+
+      authenticate_oidc {
+        client_id              = "${var.authentication_oidc_client_id}"
+        client_secret          = "${var.authentication_oidc_client_secret}"
+        issuer                 = "${var.authentication_oidc_issuer}"
+        authorization_endpoint = "${var.authentication_oidc_authorization_endpoint}"
+        token_endpoint         = "${var.authentication_oidc_token_endpoint}"
+        user_info_endpoint     = "${var.authentication_oidc_user_info_endpoint}"
+      }
+    },
+    {
+      type             = "forward"
+      target_group_arn = "${local.target_group_arn}"
+    },
+  ]
+
+  condition {
+    field  = "path-pattern"
+    values = ["${var.authenticated_paths}"]
+  }
+}
+
+resource "aws_lb_listener_rule" "authenticated_paths_cognito" {
+  count        = "${var.authentication_type == "COGNITO" && length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) == 0 ? var.authenticated_listener_arns_count : 0}"
+  listener_arn = "${var.authenticated_listener_arns[count.index]}"
+  priority     = "${var.authenticated_priority + count.index}"
+
+  action = [
+    {
+      type = "authenticate-cognito"
+
+      authenticate_cognito {
+        user_pool_arn       = "${var.authentication_cognito_user_pool_arn}"
+        user_pool_client_id = "${var.authentication_cognito_user_pool_client_id}"
+        user_pool_domain    = "${var.authentication_cognito_user_pool_domain}"
+      }
+    },
     {
       type             = "forward"
       target_group_arn = "${local.target_group_arn}"
@@ -130,13 +135,51 @@ resource "aws_lb_listener_rule" "unauthenticated_hosts" {
   }
 }
 
-resource "aws_lb_listener_rule" "authenticated_hosts" {
-  count        = "${length(var.authenticated_hosts) > 0 && length(var.authenticated_paths) == 0 ? var.authenticated_listener_arns_count : 0}"
+resource "aws_lb_listener_rule" "authenticated_hosts_oidc" {
+  count        = "${var.authentication_type == "OIDC" && length(var.authenticated_hosts) > 0 && length(var.authenticated_paths) == 0 ? var.authenticated_listener_arns_count : 0}"
   listener_arn = "${var.authenticated_listener_arns[count.index]}"
   priority     = "${var.authenticated_priority + count.index}"
 
   action = [
-    "${local.authentication_action}",
+    {
+      type = "authenticate-oidc"
+
+      authenticate_oidc {
+        client_id              = "${var.authentication_oidc_client_id}"
+        client_secret          = "${var.authentication_oidc_client_secret}"
+        issuer                 = "${var.authentication_oidc_issuer}"
+        authorization_endpoint = "${var.authentication_oidc_authorization_endpoint}"
+        token_endpoint         = "${var.authentication_oidc_token_endpoint}"
+        user_info_endpoint     = "${var.authentication_oidc_user_info_endpoint}"
+      }
+    },
+    {
+      type             = "forward"
+      target_group_arn = "${local.target_group_arn}"
+    },
+  ]
+
+  condition {
+    field  = "host-header"
+    values = ["${var.authenticated_hosts}"]
+  }
+}
+
+resource "aws_lb_listener_rule" "authenticated_hosts_cognito" {
+  count        = "${var.authentication_type == "COGNITO" && length(var.authenticated_hosts) > 0 && length(var.authenticated_paths) == 0 ? var.authenticated_listener_arns_count : 0}"
+  listener_arn = "${var.authenticated_listener_arns[count.index]}"
+  priority     = "${var.authenticated_priority + count.index}"
+
+  action = [
+    {
+      type = "authenticate-cognito"
+
+      authenticate_cognito {
+        user_pool_arn       = "${var.authentication_cognito_user_pool_arn}"
+        user_pool_client_id = "${var.authentication_cognito_user_pool_client_id}"
+        user_pool_domain    = "${var.authentication_cognito_user_pool_domain}"
+      }
+    },
     {
       type             = "forward"
       target_group_arn = "${local.target_group_arn}"
@@ -172,13 +215,56 @@ resource "aws_lb_listener_rule" "unauthenticated_hosts_paths" {
   }
 }
 
-resource "aws_lb_listener_rule" "authenticated_hosts_paths" {
-  count        = "${length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) > 0 ? var.authenticated_listener_arns_count : 0}"
+resource "aws_lb_listener_rule" "authenticated_hosts_paths_oidc" {
+  count        = "${var.authentication_type == "OIDC" && length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) > 0 ? var.authenticated_listener_arns_count : 0}"
   listener_arn = "${var.authenticated_listener_arns[count.index]}"
   priority     = "${var.authenticated_priority + count.index}"
 
   action = [
-    "${local.authentication_action}",
+    {
+      type = "authenticate-oidc"
+
+      authenticate_oidc {
+        client_id              = "${var.authentication_oidc_client_id}"
+        client_secret          = "${var.authentication_oidc_client_secret}"
+        issuer                 = "${var.authentication_oidc_issuer}"
+        authorization_endpoint = "${var.authentication_oidc_authorization_endpoint}"
+        token_endpoint         = "${var.authentication_oidc_token_endpoint}"
+        user_info_endpoint     = "${var.authentication_oidc_user_info_endpoint}"
+      }
+    },
+    {
+      type             = "forward"
+      target_group_arn = "${local.target_group_arn}"
+    },
+  ]
+
+  condition {
+    field  = "host-header"
+    values = ["${var.authenticated_hosts}"]
+  }
+
+  condition {
+    field  = "path-pattern"
+    values = ["${var.authenticated_paths}"]
+  }
+}
+
+resource "aws_lb_listener_rule" "authenticated_hosts_paths_cognito" {
+  count        = "${var.authentication_type == "COGNITO" && length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) > 0 ? var.authenticated_listener_arns_count : 0}"
+  listener_arn = "${var.authenticated_listener_arns[count.index]}"
+  priority     = "${var.authenticated_priority + count.index}"
+
+  action = [
+    {
+      type = "authenticate-cognito"
+
+      authenticate_cognito {
+        user_pool_arn       = "${var.authentication_cognito_user_pool_arn}"
+        user_pool_client_id = "${var.authentication_cognito_user_pool_client_id}"
+        user_pool_domain    = "${var.authentication_cognito_user_pool_domain}"
+      }
+    },
     {
       type             = "forward"
       target_group_arn = "${local.target_group_arn}"
