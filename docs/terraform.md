@@ -5,7 +5,7 @@
 | attributes | Additional attributes, e.g. `1` | list | `<list>` | no |
 | authenticated_hosts | Authenticated hosts to match in Hosts header | list | `<list>` | no |
 | authenticated_listener_arns | A list of authenticated ALB listener ARNs to attach ALB listener rules to | list | `<list>` | no |
-| authenticated_listener_arns_count | The number of authenticated ARNs in `unauthenticated_listener_arns`. This is necessary to work around a limitation in Terraform where counts cannot be computed | string | `0` | no |
+| authenticated_listener_arns_count | The number of authenticated ARNs in `authenticated_listener_arns`. This is necessary to work around a limitation in Terraform where counts cannot be computed | string | `0` | no |
 | authenticated_paths | Authenticated path pattern to match (a maximum of 1 can be defined) | list | `<list>` | no |
 | authenticated_priority | The priority for the rules with authentication, between 1 and 50000 (1 being highest priority). Must be different from `unauthenticated_priority` since a listener can't have multiple rules with the same priority | string | `300` | no |
 | authentication_cognito_user_pool_arn | Cognito User Pool ARN | string | `` | no |
@@ -17,7 +17,7 @@
 | authentication_oidc_issuer | OIDC Issuer | string | `` | no |
 | authentication_oidc_token_endpoint | OIDC Token Endpoint | string | `` | no |
 | authentication_oidc_user_info_endpoint | OIDC User Info Endpoint | string | `` | no |
-| authentication_type | Authentication type. Supported values are `COGNITO`, `OIDC`, `NONE` | string | `NONE` | no |
+| authentication_type | Authentication type. Supported values are `COGNITO` and `OIDC` | string | `` | no |
 | delimiter | Delimiter to be used between `namespace`, `name`, `stage` and `attributes` | string | `-` | no |
 | deregistration_delay | The amount of time to wait in seconds while deregistering target | string | `15` | no |
 | health_check_healthy_threshold | The number of consecutive health checks successes required before healthy | string | `2` | no |

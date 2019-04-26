@@ -58,7 +58,7 @@ variable "authenticated_listener_arns" {
 variable "authenticated_listener_arns_count" {
   type        = "string"
   default     = "0"
-  description = "The number of authenticated ARNs in `unauthenticated_listener_arns`. This is necessary to work around a limitation in Terraform where counts cannot be computed"
+  description = "The number of authenticated ARNs in `authenticated_listener_arns`. This is necessary to work around a limitation in Terraform where counts cannot be computed"
 }
 
 variable "deregistration_delay" {
@@ -163,8 +163,8 @@ variable "authenticated_paths" {
 
 variable "authentication_type" {
   type        = "string"
-  default     = "NONE"
-  description = "Authentication type. Supported values are `COGNITO`, `OIDC`, `NONE`"
+  default     = ""
+  description = "Authentication type. Supported values are `COGNITO` and `OIDC`"
 }
 
 variable "authentication_cognito_user_pool_arn" {
