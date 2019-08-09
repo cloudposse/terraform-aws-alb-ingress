@@ -1,6 +1,6 @@
 locals {
   target_group_enabled = "${var.target_group_arn == "" ? "true" : "false"}"
-  target_group_arn     = "${local.target_group_enabled == "true" ? aws_lb_target_group.default.arn : var.target_group_arn}"
+  target_group_arn     = "${local.target_group_enabled == "true" ? join("", aws_lb_target_group.default.*.arn) : var.target_group_arn}"
 }
 
 data "aws_lb_target_group" "default" {
