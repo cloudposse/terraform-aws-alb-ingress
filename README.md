@@ -101,17 +101,24 @@ Available targets:
 | authentication_type | Authentication type. Supported values are `COGNITO` and `OIDC` | string | `` | no |
 | delimiter | Delimiter to be used between `namespace`, `name`, `stage` and `attributes` | string | `-` | no |
 | deregistration_delay | The amount of time to wait in seconds while deregistering target | string | `15` | no |
+| health_check_enabled | Indicates whether health checks are enabled. Defaults to `true`. | string | `true` | no |
 | health_check_healthy_threshold | The number of consecutive health checks successes required before healthy | string | `2` | no |
 | health_check_interval | The duration in seconds in between health checks | string | `15` | no |
 | health_check_matcher | The HTTP response codes to indicate a healthy check | string | `200-399` | no |
 | health_check_path | The destination for the health check request | string | `/` | no |
+| health_check_port | The port to use to connect with the target. Valid values are either ports 1-65536, or `traffic-port`. Defaults to `traffic-port`. | string | `traffic-port` | no |
+| health_check_protocol | The protocol to use to connect with the target. Defaults to `HTTP`. Not applicable when `target_type` is `lambda`. | string | `HTTP` | no |
 | health_check_timeout | The amount of time to wait in seconds before failing a health check request | string | `10` | no |
 | health_check_unhealthy_threshold | The number of consecutive health check failures required before unhealthy | string | `2` | no |
 | name | Solution name, e.g. `app` | string | - | yes |
 | namespace | Namespace, which could be your organization name, e.g. `cp` or `cloudposse` | string | - | yes |
 | port | The port for generated ALB target group (if `target_group_arn` not set) | string | `80` | no |
 | protocol | The protocol for generated ALB target group (if `target_group_arn` not set) | string | `HTTP` | no |
+| slow_start | The amount time for targets to warm up before the load balancer sends them a full share of requests. The range is 30-900 seconds or 0 to disable. The default value is `0` seconds. | string | `0` | no |
 | stage | Stage, e.g. `prod`, `staging`, `dev`, or `test` | string | - | yes |
+| stickiness_cookie_duration | The time period, in seconds, during which requests from a client should be routed to the same target. After this time period expires, the load balancer-generated cookie is considered stale. The range is 1 second to 1 week (604800 seconds). The default value is 1 day (86400 seconds). | string | `86400` | no |
+| stickiness_enabled | Boolean to enable / disable `stickiness`. Default is `true` | string | `true` | no |
+| stickiness_type | The type of sticky sessions. The only current possible value is `lb_cookie`. | string | `lb_cookie` | no |
 | tags | Additional tags (e.g. `map(`BusinessUnit`,`XYZ`) | map | `<map>` | no |
 | target_group_arn | ALB target group ARN. If this is an empty string, a new one will be generated | string | `` | no |
 | target_type | - | string | `ip` | no |
@@ -269,13 +276,13 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
 |---|---|---|---|
 
   [osterman_homepage]: https://github.com/osterman
-  [osterman_avatar]: https://github.com/osterman.png?size=150
+  [osterman_avatar]: https://img.cloudposse.com/150x150/https://github.com/osterman.png
   [goruha_homepage]: https://github.com/goruha
-  [goruha_avatar]: https://github.com/goruha.png?size=150
+  [goruha_avatar]: https://img.cloudposse.com/150x150/https://github.com/goruha.png
   [aknysh_homepage]: https://github.com/aknysh
-  [aknysh_avatar]: https://github.com/aknysh.png?size=150
+  [aknysh_avatar]: https://img.cloudposse.com/150x150/https://github.com/aknysh.png
   [sarkis_homepage]: https://github.com/sarkis
-  [sarkis_avatar]: https://github.com/sarkis.png?size=150
+  [sarkis_avatar]: https://img.cloudposse.com/150x150/https://github.com/sarkis.png
 
 
 
