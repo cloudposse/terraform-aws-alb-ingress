@@ -23,13 +23,24 @@ resource "aws_lb_target_group" "default" {
   name        = "${module.default_label.id}"
   port        = "${var.port}"
   protocol    = "${var.protocol}"
-  vpc_id      = "${var.vpc_id}"
+  slow_start  = "${var.slow_start}"
+  tags        = "${var.tags}"
   target_type = "${var.target_type}"
+  vpc_id      = "${var.vpc_id}"
 
   deregistration_delay = "${var.deregistration_delay}"
 
+  stickiness = {
+    type            = "${var.stickiness_type}"
+    cookie_duration = "${var.stickiness_cookie_duration}"
+    enabled         = "${var.stickiness_enabled}"
+  }
+
   health_check {
+    enabled             = "${var.health_check_enabled}"
     path                = "${var.health_check_path}"
+    port                = "${coalesce(var.health_check_port, var.port)}"
+    protocol            = "${coalesce(var.health_check_protocol, var.protocol)}"
     timeout             = "${var.health_check_timeout}"
     healthy_threshold   = "${var.health_check_healthy_threshold}"
     unhealthy_threshold = "${var.health_check_unhealthy_threshold}"

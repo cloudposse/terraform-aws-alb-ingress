@@ -67,10 +67,28 @@ variable "deregistration_delay" {
   description = "The amount of time to wait in seconds while deregistering target"
 }
 
+variable "health_check_enabled" {
+  type        = "string"
+  default     = "true"
+  description = "Indicates whether health checks are enabled. Defaults to `true`."
+}
+
 variable "health_check_path" {
   type        = "string"
   default     = "/"
   description = "The destination for the health check request"
+}
+
+variable "health_check_port" {
+  type        = "string"
+  default     = "traffic-port"
+  description = "The port to use to connect with the target. Valid values are either ports 1-65536, or `traffic-port`. Defaults to `traffic-port`."
+}
+
+variable "health_check_protocol" {
+  type        = "string"
+  default     = "HTTP"
+  description = "The protocol to use to connect with the target. Defaults to `HTTP`. Not applicable when `target_type` is `lambda`."
 }
 
 variable "health_check_timeout" {
@@ -219,4 +237,28 @@ variable "authentication_oidc_user_info_endpoint" {
   type        = "string"
   description = "OIDC User Info Endpoint"
   default     = ""
+}
+
+variable "slow_start" {
+  type        = "string"
+  default     = "0"
+  description = "The amount time for targets to warm up before the load balancer sends them a full share of requests. The range is 30-900 seconds or 0 to disable. The default value is `0` seconds."
+}
+
+variable "stickiness_type" {
+  type        = "string"
+  default     = "lb_cookie"
+  description = "The type of sticky sessions. The only current possible value is `lb_cookie`."
+}
+
+variable "stickiness_cookie_duration" {
+  type        = "string"
+  default     = "86400"
+  description = "The time period, in seconds, during which requests from a client should be routed to the same target. After this time period expires, the load balancer-generated cookie is considered stale. The range is 1 second to 1 week (604800 seconds). The default value is 1 day (86400 seconds)."
+}
+
+variable "stickiness_enabled" {
+  type        = "string"
+  default     = "true"
+  description = "Boolean to enable / disable `stickiness`. Default is `true`"
 }
