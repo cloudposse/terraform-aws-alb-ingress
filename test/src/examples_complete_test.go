@@ -54,4 +54,9 @@ func TestExamplesComplete(t *testing.T) {
 	httpListenerArn := terraform.Output(t, terraformOptions, "http_listener_arn")
 	// Verify we're getting back the outputs we expect
 	assert.Contains(t, httpListenerArn, "arn:aws:elasticloadbalancing:us-east-2:126450723953:listener/app/eg-test-alb-ingress")
+
+	// Run `terraform output` to get the value of an output variable
+	targetGroupName := terraform.Output(t, terraformOptions, "target_group_name")
+	// Verify we're getting back the outputs we expect
+	assert.Equal(t, "eg-test-alb-ingress-default", targetGroupName)
 }
