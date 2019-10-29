@@ -3,10 +3,12 @@
 
 [![Cloud Posse][logo]](https://cpco.io/homepage)
 
-# terraform-aws-alb-ingress [![Build Status](https://travis-ci.org/cloudposse/terraform-aws-alb-ingress.svg?branch=master)](https://travis-ci.org/cloudposse/terraform-aws-alb-ingress) [![Latest Release](https://img.shields.io/github/release/cloudposse/terraform-aws-alb-ingress.svg)](https://github.com/cloudposse/terraform-aws-alb-ingress/releases/latest) [![Slack Community](https://slack.cloudposse.com/badge.svg)](https://slack.cloudposse.com)
+# terraform-aws-alb-ingress [![Codefresh Build Status](https://g.codefresh.io/api/badges/pipeline/cloudposse/terraform-modules%2Fterraform-aws-alb-ingress?type=cf-1)](https://g.codefresh.io/public/accounts/cloudposse/pipelines/5db79c3e041f80d14e93f012) [![Latest Release](https://img.shields.io/github/release/cloudposse/terraform-aws-alb-ingress.svg)](https://github.com/cloudposse/terraform-aws-alb-ingress/releases/latest) [![Slack Community](https://slack.cloudposse.com/badge.svg)](https://slack.cloudposse.com)
 
 
-Terraform module to provision an HTTP style ingress based on hostname and/or path.
+Terraform module to provision an HTTP style ALB ingress based on hostname and/or path.
+
+ALB ingress can be provisioned without authentication, or using Cognito or OIDC authentication.
 
 
 ---
@@ -47,21 +49,93 @@ We literally have [*hundreds of terraform modules*][terraform_modules] that are 
 Instead pin to the release tag (e.g. `?ref=tags/x.y.z`) of one of our [latest releases](https://github.com/cloudposse/terraform-aws-alb-ingress/releases).
 
 
-Include this module in your existing terraform code:
+For a complete example, see [examples/complete](examples/complete).
+
+For automated test of the complete example using `bats` and `Terratest`, see [test](test).
 
 ```hcl
-module "alb_ingress" {
-  source             = "git::https://github.com/cloudposse/terraform-aws-alb-ingress.git?ref=master"
-  namespace          = "eg"
-  name               = "app"
-  stage              = "dev"
+    provider "aws" {
+    region = var.region
+  }
 
-  vpc_id                              = "xxxxxxxx"
-  unauthenticated_listener_arns       = ["xxxxxx", "yyyyyyy"]
-  unauthenticated_listener_arns_count = "2"
-  health_check_path                   = "/healthz"
-  unauthenticated_paths               = ["/*"]
-}
+  module "vpc" {
+    source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.8.1"
+    namespace  = var.namespace
+    stage      = var.stage
+    name       = var.name
+    delimiter  = var.delimiter
+    attributes = var.attributes
+    cidr_block = var.vpc_cidr_block
+    tags       = var.tags
+  }
+
+  module "subnets" {
+    source               = "git::https://github.com/cloudposse/terraform-aws-dynamic-subnets.git?ref=tags/0.16.1"
+    availability_zones   = var.availability_zones
+    namespace            = var.namespace
+    stage                = var.stage
+    name                 = var.name
+    attributes           = var.attributes
+    delimiter            = var.delimiter
+    vpc_id               = module.vpc.vpc_id
+    igw_id               = module.vpc.igw_id
+    cidr_block           = module.vpc.vpc_cidr_block
+    nat_gateway_enabled  = false
+    nat_instance_enabled = false
+    tags                 = var.tags
+  }
+
+  module "alb" {
+    source                                  = "git::https://github.com/cloudposse/terraform-aws-alb.git?ref=tags/0.7.0"
+    namespace                               = var.namespace
+    stage                                   = var.stage
+    name                                    = var.name
+    attributes                              = var.attributes
+    delimiter                               = var.delimiter
+    vpc_id                                  = module.vpc.vpc_id
+    security_group_ids                      = [module.vpc.vpc_default_security_group_id]
+    subnet_ids                              = module.subnets.public_subnet_ids
+    internal                                = var.internal
+    http_enabled                            = var.http_enabled
+    access_logs_enabled                     = var.access_logs_enabled
+    alb_access_logs_s3_bucket_force_destroy = var.alb_access_logs_s3_bucket_force_destroy
+    access_logs_region                      = var.access_logs_region
+    cross_zone_load_balancing_enabled       = var.cross_zone_load_balancing_enabled
+    http2_enabled                           = var.http2_enabled
+    idle_timeout                            = var.idle_timeout
+    ip_address_type                         = var.ip_address_type
+    deletion_protection_enabled             = var.deletion_protection_enabled
+    deregistration_delay                    = var.deregistration_delay
+    health_check_path                       = var.health_check_path
+    health_check_timeout                    = var.health_check_timeout
+    health_check_healthy_threshold          = var.health_check_healthy_threshold
+    health_check_unhealthy_threshold        = var.health_check_unhealthy_threshold
+    health_check_interval                   = var.health_check_interval
+    health_check_matcher                    = var.health_check_matcher
+    target_group_port                       = var.target_group_port
+    target_group_target_type                = var.target_group_target_type
+    tags                                    = var.tags
+  }
+
+  module "alb_ingress" {
+    source                              = "git::https://github.com/cloudposse/terraform-aws-alb-ingress.git?ref=master"
+    namespace                           = var.namespace
+    stage                               = var.stage
+    name                                = var.name
+    attributes                          = var.attributes
+    delimiter                           = var.delimiter
+    vpc_id                              = module.vpc.vpc_id
+    authentication_type                 = var.authentication_type
+    unauthenticated_priority            = var.unauthenticated_priority
+    unauthenticated_paths               = var.unauthenticated_paths
+    slow_start                          = var.slow_start
+    stickiness_enabled                  = var.stickiness_enabled
+    default_target_group_enabled        = false
+    target_group_arn                    = module.alb.default_target_group_arn
+    unauthenticated_listener_arns       = [module.alb.http_listener_arn]
+    unauthenticated_listener_arns_count = 1
+    tags                                = var.tags
+  }
 ```
 
 
@@ -83,12 +157,12 @@ Available targets:
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| attributes | Additional attributes, e.g. `1` | list | `<list>` | no |
-| authenticated_hosts | Authenticated hosts to match in Hosts header | list | `<list>` | no |
-| authenticated_listener_arns | A list of authenticated ALB listener ARNs to attach ALB listener rules to | list | `<list>` | no |
-| authenticated_listener_arns_count | The number of authenticated ARNs in `authenticated_listener_arns`. This is necessary to work around a limitation in Terraform where counts cannot be computed | string | `0` | no |
-| authenticated_paths | Authenticated path pattern to match (a maximum of 1 can be defined) | list | `<list>` | no |
-| authenticated_priority | The priority for the rules with authentication, between 1 and 50000 (1 being highest priority). Must be different from `unauthenticated_priority` since a listener can't have multiple rules with the same priority | string | `300` | no |
+| attributes | Additional attributes (_e.g._ "1") | list(string) | `<list>` | no |
+| authenticated_hosts | Authenticated hosts to match in Hosts header | list(string) | `<list>` | no |
+| authenticated_listener_arns | A list of authenticated ALB listener ARNs to attach ALB listener rules to | list(string) | `<list>` | no |
+| authenticated_listener_arns_count | The number of authenticated ARNs in `authenticated_listener_arns`. This is necessary to work around a limitation in Terraform where counts cannot be computed | number | `0` | no |
+| authenticated_paths | Authenticated path pattern to match (a maximum of 1 can be defined) | list(string) | `<list>` | no |
+| authenticated_priority | The priority for the rules with authentication, between 1 and 50000 (1 being highest priority). Must be different from `unauthenticated_priority` since a listener can't have multiple rules with the same priority | number | `300` | no |
 | authentication_cognito_user_pool_arn | Cognito User Pool ARN | string | `` | no |
 | authentication_cognito_user_pool_client_id | Cognito User Pool Client ID | string | `` | no |
 | authentication_cognito_user_pool_domain | Cognito User Pool Domain. The User Pool Domain should be set to the domain prefix (`xxx`) instead of full domain (https://xxx.auth.us-west-2.amazoncognito.com) | string | `` | no |
@@ -99,43 +173,44 @@ Available targets:
 | authentication_oidc_token_endpoint | OIDC Token Endpoint | string | `` | no |
 | authentication_oidc_user_info_endpoint | OIDC User Info Endpoint | string | `` | no |
 | authentication_type | Authentication type. Supported values are `COGNITO` and `OIDC` | string | `` | no |
-| delimiter | Delimiter to be used between `namespace`, `name`, `stage` and `attributes` | string | `-` | no |
-| deregistration_delay | The amount of time to wait in seconds while deregistering target | string | `15` | no |
-| health_check_enabled | Indicates whether health checks are enabled. Defaults to `true`. | string | `true` | no |
-| health_check_healthy_threshold | The number of consecutive health checks successes required before healthy | string | `2` | no |
-| health_check_interval | The duration in seconds in between health checks | string | `15` | no |
+| default_target_group_enabled | Enable/disable creation of the default target group | bool | `true` | no |
+| delimiter | Delimiter between `namespace`, `stage`, `name` and `attributes` | string | `-` | no |
+| deregistration_delay | The amount of time to wait in seconds while deregistering target | number | `15` | no |
+| health_check_enabled | Indicates whether health checks are enabled. Defaults to `true` | bool | `true` | no |
+| health_check_healthy_threshold | The number of consecutive health checks successes required before healthy | number | `2` | no |
+| health_check_interval | The duration in seconds in between health checks | number | `15` | no |
 | health_check_matcher | The HTTP response codes to indicate a healthy check | string | `200-399` | no |
 | health_check_path | The destination for the health check request | string | `/` | no |
-| health_check_port | The port to use to connect with the target. Valid values are either ports 1-65536, or `traffic-port`. Defaults to `traffic-port`. | string | `traffic-port` | no |
-| health_check_protocol | The protocol to use to connect with the target. Defaults to `HTTP`. Not applicable when `target_type` is `lambda`. | string | `HTTP` | no |
-| health_check_timeout | The amount of time to wait in seconds before failing a health check request | string | `10` | no |
-| health_check_unhealthy_threshold | The number of consecutive health check failures required before unhealthy | string | `2` | no |
-| name | Solution name, e.g. `app` | string | - | yes |
-| namespace | Namespace, which could be your organization name, e.g. `cp` or `cloudposse` | string | - | yes |
-| port | The port for generated ALB target group (if `target_group_arn` not set) | string | `80` | no |
-| protocol | The protocol for generated ALB target group (if `target_group_arn` not set) | string | `HTTP` | no |
-| slow_start | The amount time for targets to warm up before the load balancer sends them a full share of requests. The range is 30-900 seconds or 0 to disable. The default value is `0` seconds. | string | `0` | no |
-| stage | Stage, e.g. `prod`, `staging`, `dev`, or `test` | string | - | yes |
-| stickiness_cookie_duration | The time period, in seconds, during which requests from a client should be routed to the same target. After this time period expires, the load balancer-generated cookie is considered stale. The range is 1 second to 1 week (604800 seconds). The default value is 1 day (86400 seconds). | string | `86400` | no |
-| stickiness_enabled | Boolean to enable / disable `stickiness`. Default is `true` | string | `true` | no |
-| stickiness_type | The type of sticky sessions. The only current possible value is `lb_cookie`. | string | `lb_cookie` | no |
-| tags | Additional tags (e.g. `map(`BusinessUnit`,`XYZ`) | map | `<map>` | no |
-| target_group_arn | ALB target group ARN. If this is an empty string, a new one will be generated | string | `` | no |
-| target_type | - | string | `ip` | no |
-| unauthenticated_hosts | Unauthenticated hosts to match in Hosts header | list | `<list>` | no |
-| unauthenticated_listener_arns | A list of unauthenticated ALB listener ARNs to attach ALB listener rules to | list | `<list>` | no |
-| unauthenticated_listener_arns_count | The number of unauthenticated ARNs in `unauthenticated_listener_arns`. This is necessary to work around a limitation in Terraform where counts cannot be computed | string | `0` | no |
-| unauthenticated_paths | Unauthenticated path pattern to match (a maximum of 1 can be defined) | list | `<list>` | no |
-| unauthenticated_priority | The priority for the rules without authentication, between 1 and 50000 (1 being highest priority). Must be different from `authenticated_priority` since a listener can't have multiple rules with the same priority | string | `100` | no |
+| health_check_port | The port to use to connect with the target. Valid values are either ports 1-65536, or `traffic-port`. Defaults to `traffic-port` | string | `traffic-port` | no |
+| health_check_protocol | The protocol to use to connect with the target. Defaults to `HTTP`. Not applicable when `target_type` is `lambda` | string | `HTTP` | no |
+| health_check_timeout | The amount of time to wait in seconds before failing a health check request | number | `10` | no |
+| health_check_unhealthy_threshold | The number of consecutive health check failures required before unhealthy | number | `2` | no |
+| name | Name of the application | string | - | yes |
+| namespace | Namespace (e.g. `eg` or `cp`) | string | `` | no |
+| port | The port for the created ALB target group (if `target_group_arn` is not set) | number | `80` | no |
+| protocol | The protocol for the created ALB target group (if `target_group_arn` is not set) | string | `HTTP` | no |
+| slow_start | The amount of time for targets to warm up before the load balancer sends them a full share of requests. The range is 30-900 seconds or 0 to disable. The default value is `0` seconds | number | `0` | no |
+| stage | Stage (e.g. `prod`, `dev`, `staging`) | string | `` | no |
+| stickiness_cookie_duration | The time period, in seconds, during which requests from a client should be routed to the same target. After this time period expires, the load balancer-generated cookie is considered stale. The range is 1 second to 1 week (604800 seconds). The default value is 1 day (86400 seconds) | number | `86400` | no |
+| stickiness_enabled | Boolean to enable / disable `stickiness`. Default is `true` | bool | `true` | no |
+| stickiness_type | The type of sticky sessions. The only current possible value is `lb_cookie` | string | `lb_cookie` | no |
+| tags | Additional tags (_e.g._ { BusinessUnit : ABC }) | map(string) | `<map>` | no |
+| target_group_arn | Existing ALB target group ARN. If provided, set `default_target_group_enabled` to `false` to disable creation of the default target group | string | `` | no |
+| target_type | The type (`instance`, `ip` or `lambda`) of targets that can be registered with the target group | string | `ip` | no |
+| unauthenticated_hosts | Unauthenticated hosts to match in Hosts header | list(string) | `<list>` | no |
+| unauthenticated_listener_arns | A list of unauthenticated ALB listener ARNs to attach ALB listener rules to | list(string) | `<list>` | no |
+| unauthenticated_listener_arns_count | The number of unauthenticated ARNs in `unauthenticated_listener_arns`. This is necessary to work around a limitation in Terraform where counts cannot be computed | number | `0` | no |
+| unauthenticated_paths | Unauthenticated path pattern to match (a maximum of 1 can be defined) | list(string) | `<list>` | no |
+| unauthenticated_priority | The priority for the rules without authentication, between 1 and 50000 (1 being highest priority). Must be different from `authenticated_priority` since a listener can't have multiple rules with the same priority | number | `100` | no |
 | vpc_id | The VPC ID where generated ALB target group will be provisioned (if `target_group_arn` is not set) | string | - | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| target_group_arn | ALB Target group ARN |
-| target_group_arn_suffix | ALB Target group ARN suffix |
-| target_group_name | ALB Target group name |
+| target_group_arn | ALB Target Group ARN |
+| target_group_arn_suffix | ALB Target Group ARN suffix |
+| target_group_name | ALB Target Group name |
 
 
 
