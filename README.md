@@ -207,8 +207,6 @@ Available targets:
 
 | Name | Description |
 |------|-------------|
-| hosts_listener_rule_id | Hosts listener rule ID |
-| paths_listener_rule_id | Paths listener rule ID |
 | target_group_arn | ALB Target Group ARN |
 | target_group_arn_suffix | ALB Target Group ARN suffix |
 | target_group_name | ALB Target Group name |

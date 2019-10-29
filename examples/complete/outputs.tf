@@ -77,13 +77,3 @@ output "target_group_arn_suffix" {
   description = "ALB Target Group ARN suffix"
   value       = module.alb_ingress.target_group_arn_suffix
 }
-
-output "paths_listener_rule_id" {
-  description = "Paths listener rule ID"
-  value       = module.alb_ingress.paths_listener_rule_id
-}
-
-output "hosts_listener_rule_id" {
-  description = "Hosts listener rule ID"
-  value       = module.alb_ingress.hosts_listener_rule_id
-}
