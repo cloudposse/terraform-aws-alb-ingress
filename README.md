@@ -172,6 +172,7 @@ Available targets:
 | authentication_oidc_token_endpoint | OIDC Token Endpoint | string | `` | no |
 | authentication_oidc_user_info_endpoint | OIDC User Info Endpoint | string | `` | no |
 | authentication_type | Authentication type. Supported values are `COGNITO` and `OIDC` | string | `` | no |
+| default_target_group_enabled | Enable/disable creation of the default target group | bool | `true` | no |
 | delimiter | Delimiter between `namespace`, `stage`, `name` and `attributes` | string | `-` | no |
 | deregistration_delay | The amount of time to wait in seconds while deregistering target | number | `15` | no |
 | health_check_enabled | Indicates whether health checks are enabled. Defaults to `true` | bool | `true` | no |
@@ -193,7 +194,7 @@ Available targets:
 | stickiness_enabled | Boolean to enable / disable `stickiness`. Default is `true` | bool | `true` | no |
 | stickiness_type | The type of sticky sessions. The only current possible value is `lb_cookie` | string | `lb_cookie` | no |
 | tags | Additional tags (_e.g._ { BusinessUnit : ABC }) | map(string) | `<map>` | no |
-| target_group_arn | ALB target group ARN. If this is an empty string, a new target group will be created | string | `` | no |
+| target_group_arn | Existing ALB target group ARN. If provided, set `default_target_group_enabled` to `false` to disable creation of the default target group | string | `` | no |
 | target_type | The type (`instance`, `ip` or `lambda`) of targets that can be registered with the target group | string | `ip` | no |
 | unauthenticated_hosts | Unauthenticated hosts to match in Hosts header | list(string) | `<list>` | no |
 | unauthenticated_listener_arns | A list of unauthenticated ALB listener ARNs to attach ALB listener rules to | list(string) | `<list>` | no |

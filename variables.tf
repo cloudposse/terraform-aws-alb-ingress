@@ -33,10 +33,16 @@ variable "tags" {
   default     = {}
 }
 
+variable "default_target_group_enabled" {
+  type        = bool
+  default     = true
+  description = "Enable/disable creation of the default target group"
+}
+
 variable "target_group_arn" {
   type        = string
   default     = ""
-  description = "ALB target group ARN. If this is an empty string, a new target group will be created"
+  description = "Existing ALB target group ARN. If provided, set `default_target_group_enabled` to `false` to disable creation of the default target group"
 }
 
 variable "unauthenticated_listener_arns" {

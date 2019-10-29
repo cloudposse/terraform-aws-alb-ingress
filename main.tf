@@ -1,6 +1,5 @@
 locals {
-  target_group_enabled = var.target_group_arn == "" ? true : false
-  target_group_arn     = local.target_group_enabled ? join("", aws_lb_target_group.default.*.arn) : var.target_group_arn
+  target_group_arn = var.default_target_group_enabled ? join("", aws_lb_target_group.default.*.arn) : var.target_group_arn
 }
 
 data "aws_lb_target_group" "default" {
@@ -8,7 +7,7 @@ data "aws_lb_target_group" "default" {
 }
 
 module "default_label" {
-  enabled    = local.target_group_enabled
+  enabled    = var.default_target_group_enabled
   source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
   attributes = var.attributes
   delimiter  = var.delimiter
@@ -19,7 +18,7 @@ module "default_label" {
 }
 
 resource "aws_lb_target_group" "default" {
-  count       = local.target_group_enabled ? 1 : 0
+  count       = var.default_target_group_enabled ? 1 : 0
   name        = module.default_label.id
   port        = var.port
   protocol    = var.protocol
