@@ -130,6 +130,7 @@ For automated test of the complete example using `bats` and `Terratest`, see [te
     unauthenticated_paths               = var.unauthenticated_paths
     slow_start                          = var.slow_start
     stickiness_enabled                  = var.stickiness_enabled
+    default_target_group_enabled        = false
     target_group_arn                    = module.alb.default_target_group_arn
     unauthenticated_listener_arns       = [module.alb.http_listener_arn]
     unauthenticated_listener_arns_count = 1
