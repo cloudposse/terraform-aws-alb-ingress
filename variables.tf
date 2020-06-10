@@ -131,13 +131,13 @@ variable "health_check_matcher" {
 
 variable "unauthenticated_priority" {
   type        = number
-  default     = 100
+  default     = null
   description = "The priority for the rules without authentication, between 1 and 50000 (1 being highest priority). Must be different from `authenticated_priority` since a listener can't have multiple rules with the same priority"
 }
 
 variable "authenticated_priority" {
   type        = number
-  default     = 300
+  default     = null
   description = "The priority for the rules with authentication, between 1 and 50000 (1 being highest priority). Must be different from `unauthenticated_priority` since a listener can't have multiple rules with the same priority"
 }
 
