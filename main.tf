@@ -3,6 +3,8 @@ locals {
 }
 
 data "aws_lb_target_group" "default" {
+  count = var.enabled
+
   arn = local.target_group_arn
 }
 
