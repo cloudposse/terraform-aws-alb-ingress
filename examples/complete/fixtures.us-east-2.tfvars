@@ -6,7 +6,7 @@ namespace = "eg"
 
 stage = "test"
 
-name = "alb-ingress"
+name = "lb"
 
 vpc_cidr_block = "172.16.0.0/16"
 
