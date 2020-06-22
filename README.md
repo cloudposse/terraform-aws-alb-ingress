@@ -93,7 +93,7 @@ For a complete example, see [examples/complete](examples/complete).
 For automated test of the complete example using `bats` and `Terratest`, see [test](test).
 
 ```hcl
-    provider "aws" {
+  provider "aws" {
     region = var.region
   }
 
@@ -231,6 +231,7 @@ Available targets:
 | default\_target\_group\_enabled | Enable/disable creation of the default target group | `bool` | `true` | no |
 | delimiter | Delimiter between `namespace`, `stage`, `name` and `attributes` | `string` | `"-"` | no |
 | deregistration\_delay | The amount of time to wait in seconds while deregistering target | `number` | `15` | no |
+| enabled | Set to false to prevent the module from creating any resources | `bool` | `true` | no |
 | health\_check\_enabled | Indicates whether health checks are enabled. Defaults to `true` | `bool` | `true` | no |
 | health\_check\_healthy\_threshold | The number of consecutive health checks successes required before healthy | `number` | `2` | no |
 | health\_check\_interval | The duration in seconds in between health checks | `number` | `15` | no |

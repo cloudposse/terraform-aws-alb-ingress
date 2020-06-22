@@ -3,11 +3,14 @@ locals {
 }
 
 data "aws_lb_target_group" "default" {
+  count = var.enabled ? 1 : 0
+
   arn = local.target_group_arn
 }
 
 module "default_label" {
-  enabled    = var.default_target_group_enabled
+  enabled = var.enabled && var.default_target_group_enabled
+
   source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
   attributes = var.attributes
   delimiter  = var.delimiter
@@ -18,7 +21,8 @@ module "default_label" {
 }
 
 resource "aws_lb_target_group" "default" {
-  count       = var.default_target_group_enabled ? 1 : 0
+  count = var.enabled && var.default_target_group_enabled ? 1 : 0
+
   name        = module.default_label.id
   port        = var.port
   protocol    = var.protocol
@@ -49,7 +53,8 @@ resource "aws_lb_target_group" "default" {
 }
 
 resource "aws_lb_listener_rule" "unauthenticated_paths" {
-  count        = length(var.unauthenticated_paths) > 0 && length(var.unauthenticated_hosts) == 0 ? var.unauthenticated_listener_arns_count : 0
+  count = var.enabled && length(var.unauthenticated_paths) > 0 && length(var.unauthenticated_hosts) == 0 ? var.unauthenticated_listener_arns_count : 0
+
   listener_arn = var.unauthenticated_listener_arns[count.index]
   priority     = var.unauthenticated_priority > 0 ? var.unauthenticated_priority + count.index : null
 
@@ -65,7 +70,8 @@ resource "aws_lb_listener_rule" "unauthenticated_paths" {
 }
 
 resource "aws_lb_listener_rule" "authenticated_paths_oidc" {
-  count        = var.authentication_type == "OIDC" && length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) == 0 ? var.authenticated_listener_arns_count : 0
+  count = var.enabled && var.authentication_type == "OIDC" && length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) == 0 ? var.authenticated_listener_arns_count : 0
+
   listener_arn = var.authenticated_listener_arns[count.index]
   priority     = var.authenticated_priority > 0 ? var.authenticated_priority + count.index : null
 
@@ -94,7 +100,8 @@ resource "aws_lb_listener_rule" "authenticated_paths_oidc" {
 }
 
 resource "aws_lb_listener_rule" "authenticated_paths_cognito" {
-  count        = var.authentication_type == "COGNITO" && length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) == 0 ? var.authenticated_listener_arns_count : 0
+  count = var.enabled && var.authentication_type == "COGNITO" && length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) == 0 ? var.authenticated_listener_arns_count : 0
+
   listener_arn = var.authenticated_listener_arns[count.index]
   priority     = var.authenticated_priority > 0 ? var.authenticated_priority + count.index : null
 
@@ -120,7 +127,8 @@ resource "aws_lb_listener_rule" "authenticated_paths_cognito" {
 }
 
 resource "aws_lb_listener_rule" "unauthenticated_hosts" {
-  count        = length(var.unauthenticated_hosts) > 0 && length(var.unauthenticated_paths) == 0 ? var.unauthenticated_listener_arns_count : 0
+  count = var.enabled && length(var.unauthenticated_hosts) > 0 && length(var.unauthenticated_paths) == 0 ? var.unauthenticated_listener_arns_count : 0
+
   listener_arn = var.unauthenticated_listener_arns[count.index]
   priority     = var.unauthenticated_priority > 0 ? var.unauthenticated_priority + count.index : null
 
@@ -136,7 +144,8 @@ resource "aws_lb_listener_rule" "unauthenticated_hosts" {
 }
 
 resource "aws_lb_listener_rule" "authenticated_hosts_oidc" {
-  count        = var.authentication_type == "OIDC" && length(var.authenticated_hosts) > 0 && length(var.authenticated_paths) == 0 ? var.authenticated_listener_arns_count : 0
+  count = var.enabled && var.authentication_type == "OIDC" && length(var.authenticated_hosts) > 0 && length(var.authenticated_paths) == 0 ? var.authenticated_listener_arns_count : 0
+
   listener_arn = var.authenticated_listener_arns[count.index]
   priority     = var.authenticated_priority > 0 ? var.authenticated_priority + count.index : null
 
@@ -165,7 +174,8 @@ resource "aws_lb_listener_rule" "authenticated_hosts_oidc" {
 }
 
 resource "aws_lb_listener_rule" "authenticated_hosts_cognito" {
-  count        = var.authentication_type == "COGNITO" && length(var.authenticated_hosts) > 0 && length(var.authenticated_paths) == 0 ? var.authenticated_listener_arns_count : 0
+  count = var.enabled && var.authentication_type == "COGNITO" && length(var.authenticated_hosts) > 0 && length(var.authenticated_paths) == 0 ? var.authenticated_listener_arns_count : 0
+
   listener_arn = var.authenticated_listener_arns[count.index]
   priority     = var.authenticated_priority > 0 ? var.authenticated_priority + count.index : null
 
@@ -191,7 +201,8 @@ resource "aws_lb_listener_rule" "authenticated_hosts_cognito" {
 }
 
 resource "aws_lb_listener_rule" "unauthenticated_hosts_paths" {
-  count        = length(var.unauthenticated_paths) > 0 && length(var.unauthenticated_hosts) > 0 ? var.unauthenticated_listener_arns_count : 0
+  count = var.enabled && length(var.unauthenticated_paths) > 0 && length(var.unauthenticated_hosts) > 0 ? var.unauthenticated_listener_arns_count : 0
+
   listener_arn = var.unauthenticated_listener_arns[count.index]
   priority     = var.unauthenticated_priority > 0 ? var.unauthenticated_priority + count.index : null
 
@@ -212,7 +223,8 @@ resource "aws_lb_listener_rule" "unauthenticated_hosts_paths" {
 }
 
 resource "aws_lb_listener_rule" "authenticated_hosts_paths_oidc" {
-  count        = var.authentication_type == "OIDC" && length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) > 0 ? var.authenticated_listener_arns_count : 0
+  count = var.enabled && var.authentication_type == "OIDC" && length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) > 0 ? var.authenticated_listener_arns_count : 0
+
   listener_arn = var.authenticated_listener_arns[count.index]
   priority     = var.authenticated_priority > 0 ? var.authenticated_priority + count.index : null
 
@@ -246,7 +258,8 @@ resource "aws_lb_listener_rule" "authenticated_hosts_paths_oidc" {
 }
 
 resource "aws_lb_listener_rule" "authenticated_hosts_paths_cognito" {
-  count        = var.authentication_type == "COGNITO" && length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) > 0 ? var.authenticated_listener_arns_count : 0
+  count = var.enabled && var.authentication_type == "COGNITO" && length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) > 0 ? var.authenticated_listener_arns_count : 0
+
   listener_arn = var.authenticated_listener_arns[count.index]
   priority     = var.authenticated_priority > 0 ? var.authenticated_priority + count.index : null
 
