@@ -93,7 +93,7 @@ For a complete example, see [examples/complete](examples/complete).
 For automated test of the complete example using `bats` and `Terratest`, see [test](test).
 
 ```hcl
-    provider "aws" {
+  provider "aws" {
     region = var.region
   }
 
