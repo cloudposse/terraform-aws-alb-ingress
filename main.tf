@@ -56,7 +56,7 @@ resource "aws_lb_listener_rule" "unauthenticated_paths" {
   count = var.enabled && length(var.unauthenticated_paths) > 0 && length(var.unauthenticated_hosts) == 0 ? var.unauthenticated_listener_arns_count : 0
 
   listener_arn = var.unauthenticated_listener_arns[count.index]
-  priority     = var.unauthenticated_priority + count.index
+  priority     = var.unauthenticated_priority > 0 ? var.unauthenticated_priority + count.index : null
 
   action {
     type             = "forward"
@@ -73,7 +73,7 @@ resource "aws_lb_listener_rule" "authenticated_paths_oidc" {
   count = var.enabled && var.authentication_type == "OIDC" && length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) == 0 ? var.authenticated_listener_arns_count : 0
 
   listener_arn = var.authenticated_listener_arns[count.index]
-  priority     = var.authenticated_priority + count.index
+  priority     = var.authenticated_priority > 0 ? var.authenticated_priority + count.index : null
 
   action {
     type = "authenticate-oidc"
@@ -103,7 +103,7 @@ resource "aws_lb_listener_rule" "authenticated_paths_cognito" {
   count = var.enabled && var.authentication_type == "COGNITO" && length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) == 0 ? var.authenticated_listener_arns_count : 0
 
   listener_arn = var.authenticated_listener_arns[count.index]
-  priority     = var.authenticated_priority + count.index
+  priority     = var.authenticated_priority > 0 ? var.authenticated_priority + count.index : null
 
   action {
     type = "authenticate-cognito"
@@ -130,7 +130,7 @@ resource "aws_lb_listener_rule" "unauthenticated_hosts" {
   count = var.enabled && length(var.unauthenticated_hosts) > 0 && length(var.unauthenticated_paths) == 0 ? var.unauthenticated_listener_arns_count : 0
 
   listener_arn = var.unauthenticated_listener_arns[count.index]
-  priority     = var.unauthenticated_priority + count.index
+  priority     = var.unauthenticated_priority > 0 ? var.unauthenticated_priority + count.index : null
 
   action {
     type             = "forward"
@@ -147,7 +147,7 @@ resource "aws_lb_listener_rule" "authenticated_hosts_oidc" {
   count = var.enabled && var.authentication_type == "OIDC" && length(var.authenticated_hosts) > 0 && length(var.authenticated_paths) == 0 ? var.authenticated_listener_arns_count : 0
 
   listener_arn = var.authenticated_listener_arns[count.index]
-  priority     = var.authenticated_priority + count.index
+  priority     = var.authenticated_priority > 0 ? var.authenticated_priority + count.index : null
 
   action {
     type = "authenticate-oidc"
@@ -177,7 +177,7 @@ resource "aws_lb_listener_rule" "authenticated_hosts_cognito" {
   count = var.enabled && var.authentication_type == "COGNITO" && length(var.authenticated_hosts) > 0 && length(var.authenticated_paths) == 0 ? var.authenticated_listener_arns_count : 0
 
   listener_arn = var.authenticated_listener_arns[count.index]
-  priority     = var.authenticated_priority + count.index
+  priority     = var.authenticated_priority > 0 ? var.authenticated_priority + count.index : null
 
   action {
     type = "authenticate-cognito"
@@ -204,7 +204,7 @@ resource "aws_lb_listener_rule" "unauthenticated_hosts_paths" {
   count = var.enabled && length(var.unauthenticated_paths) > 0 && length(var.unauthenticated_hosts) > 0 ? var.unauthenticated_listener_arns_count : 0
 
   listener_arn = var.unauthenticated_listener_arns[count.index]
-  priority     = var.unauthenticated_priority + count.index
+  priority     = var.unauthenticated_priority > 0 ? var.unauthenticated_priority + count.index : null
 
   action {
     type             = "forward"
@@ -226,7 +226,7 @@ resource "aws_lb_listener_rule" "authenticated_hosts_paths_oidc" {
   count = var.enabled && var.authentication_type == "OIDC" && length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) > 0 ? var.authenticated_listener_arns_count : 0
 
   listener_arn = var.authenticated_listener_arns[count.index]
-  priority     = var.authenticated_priority + count.index
+  priority     = var.authenticated_priority > 0 ? var.authenticated_priority + count.index : null
 
   action {
     type = "authenticate-oidc"
@@ -261,7 +261,7 @@ resource "aws_lb_listener_rule" "authenticated_hosts_paths_cognito" {
   count = var.enabled && var.authentication_type == "COGNITO" && length(var.authenticated_paths) > 0 && length(var.authenticated_hosts) > 0 ? var.authenticated_listener_arns_count : 0
 
   listener_arn = var.authenticated_listener_arns[count.index]
-  priority     = var.authenticated_priority + count.index
+  priority     = var.authenticated_priority > 0 ? var.authenticated_priority + count.index : null
 
   action {
     type = "authenticate-cognito"
