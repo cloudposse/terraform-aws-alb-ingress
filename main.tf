@@ -11,7 +11,7 @@ data "aws_lb_target_group" "default" {
 module "default_label" {
   enabled = var.enabled && var.default_target_group_enabled
 
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.17.0"
   attributes = var.attributes
   delimiter  = var.delimiter
   name       = var.name
