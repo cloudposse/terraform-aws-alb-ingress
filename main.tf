@@ -1,5 +1,7 @@
 locals {
-  target_group_arn = var.default_target_group_enabled ? join("", aws_lb_target_group.default.*.arn) : var.target_group_arn
+  target_group_arn             = var.default_target_group_enabled ? join("", aws_lb_target_group.default.*.arn) : var.target_group_arn
+  authentication_oidc_scope    = length(var.authentication_oidc_scope) > 0 ? join("%20", [for scope in var.authentication_oidc_scope: urlencode(scope)]) : null
+  authentication_cognito_scope = length(var.authentication_cognito_scope) > 0 ? join("%20", [for scope in var.authentication_cognito_scope: urlencode(scope)]) : null
 }
 
 data "aws_lb_target_group" "default" {
@@ -86,6 +88,7 @@ resource "aws_lb_listener_rule" "authenticated_paths_oidc" {
       authorization_endpoint = var.authentication_oidc_authorization_endpoint
       token_endpoint         = var.authentication_oidc_token_endpoint
       user_info_endpoint     = var.authentication_oidc_user_info_endpoint
+      scope                  = local.authentication_oidc_scope
     }
   }
 
@@ -114,6 +117,7 @@ resource "aws_lb_listener_rule" "authenticated_paths_cognito" {
       user_pool_arn       = var.authentication_cognito_user_pool_arn
       user_pool_client_id = var.authentication_cognito_user_pool_client_id
       user_pool_domain    = var.authentication_cognito_user_pool_domain
+      scope               = local.authentication_cognito_scope
     }
   }
 
@@ -163,6 +167,7 @@ resource "aws_lb_listener_rule" "authenticated_hosts_oidc" {
       authorization_endpoint = var.authentication_oidc_authorization_endpoint
       token_endpoint         = var.authentication_oidc_token_endpoint
       user_info_endpoint     = var.authentication_oidc_user_info_endpoint
+      scope                  = local.authentication_oidc_scope
     }
   }
 
@@ -191,6 +196,7 @@ resource "aws_lb_listener_rule" "authenticated_hosts_cognito" {
       user_pool_arn       = var.authentication_cognito_user_pool_arn
       user_pool_client_id = var.authentication_cognito_user_pool_client_id
       user_pool_domain    = var.authentication_cognito_user_pool_domain
+      scope               = local.authentication_cognito_scope
     }
   }
 
@@ -246,6 +252,7 @@ resource "aws_lb_listener_rule" "authenticated_hosts_paths_oidc" {
       authorization_endpoint = var.authentication_oidc_authorization_endpoint
       token_endpoint         = var.authentication_oidc_token_endpoint
       user_info_endpoint     = var.authentication_oidc_user_info_endpoint
+      scope                  = local.authentication_oidc_scope
     }
   }
 
@@ -280,6 +287,7 @@ resource "aws_lb_listener_rule" "authenticated_hosts_paths_cognito" {
       user_pool_arn       = var.authentication_cognito_user_pool_arn
       user_pool_client_id = var.authentication_cognito_user_pool_client_id
       user_pool_domain    = var.authentication_cognito_user_pool_domain
+      scope               = local.authentication_cognito_scope
     }
   }
 

@@ -200,6 +200,7 @@ Available targets:
 | authenticated\_listener\_arns\_count | The number of authenticated ARNs in `authenticated_listener_arns`. This is necessary to work around a limitation in Terraform where counts cannot be computed | `number` | `0` | no |
 | authenticated\_paths | Authenticated path pattern to match (a maximum of 1 can be defined) | `list(string)` | `[]` | no |
 | authenticated\_priority | The priority for the rules with authentication, between 1 and 50000 (1 being highest priority). Must be different from `unauthenticated_priority` since a listener can't have multiple rules with the same priority | `number` | `0` | no |
+| authentication\_cognito\_scope | Cognito scope | `list(string)` | `[]` | no |
 | authentication\_cognito\_user\_pool\_arn | Cognito User Pool ARN | `string` | `""` | no |
 | authentication\_cognito\_user\_pool\_client\_id | Cognito User Pool Client ID | `string` | `""` | no |
 | authentication\_cognito\_user\_pool\_domain | Cognito User Pool Domain. The User Pool Domain should be set to the domain prefix (`xxx`) instead of full domain (https://xxx.auth.us-west-2.amazoncognito.com) | `string` | `""` | no |
@@ -207,6 +208,7 @@ Available targets:
 | authentication\_oidc\_client\_id | OIDC Client ID | `string` | `""` | no |
 | authentication\_oidc\_client\_secret | OIDC Client Secret | `string` | `""` | no |
 | authentication\_oidc\_issuer | OIDC Issuer | `string` | `""` | no |
+| authentication\_oidc\_scope | OIDC scope | `list(string)` | `[]` | no |
 | authentication\_oidc\_token\_endpoint | OIDC Token Endpoint | `string` | `""` | no |
 | authentication\_oidc\_user\_info\_endpoint | OIDC User Info Endpoint | `string` | `""` | no |
 | authentication\_type | Authentication type. Supported values are `COGNITO` and `OIDC` | `string` | `""` | no |
