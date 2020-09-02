@@ -174,6 +174,7 @@ Available targets:
 
 ```
 <!-- markdownlint-restore -->
+<!-- markdownlint-disable -->
 ## Requirements
 
 | Name | Version |
@@ -252,6 +253,7 @@ Available targets:
 | target\_group\_arn\_suffix | ALB Target Group ARN suffix |
 | target\_group\_name | ALB Target Group name |
 
+<!-- markdownlint-restore -->
 
 
 

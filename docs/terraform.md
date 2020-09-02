@@ -1,3 +1,4 @@
+<!-- markdownlint-disable -->
 ## Requirements
 
 | Name | Version |
@@ -76,3 +77,4 @@
 | target\_group\_arn\_suffix | ALB Target Group ARN suffix |
 | target\_group\_name | ALB Target Group name |
 
+<!-- markdownlint-restore -->
