@@ -118,7 +118,6 @@ For automated test of the complete example using `bats` and `Terratest`, see [te
     http_enabled                            = var.http_enabled
     access_logs_enabled                     = var.access_logs_enabled
     alb_access_logs_s3_bucket_force_destroy = var.alb_access_logs_s3_bucket_force_destroy
-    access_logs_region                      = var.access_logs_region
     cross_zone_load_balancing_enabled       = var.cross_zone_load_balancing_enabled
     http2_enabled                           = var.http2_enabled
     idle_timeout                            = var.idle_timeout
