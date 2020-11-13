@@ -3,15 +3,15 @@ provider "aws" {
 }
 
 module "vpc" {
-  source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.18.0"
-  
+  source = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.18.0"
+
   cidr_block = var.vpc_cidr_block
 
-  context    = module.this.context
+  context = module.this.context
 }
 
 module "subnets" {
-  source               = "git::https://github.com/cloudposse/terraform-aws-dynamic-subnets.git?ref=tags/0.31.0"
+  source = "git::https://github.com/cloudposse/terraform-aws-dynamic-subnets.git?ref=tags/0.31.0"
 
   availability_zones   = var.availability_zones
   vpc_id               = module.vpc.vpc_id
@@ -20,11 +20,11 @@ module "subnets" {
   nat_gateway_enabled  = false
   nat_instance_enabled = false
 
-  context    = module.this.context
+  context = module.this.context
 }
 
 module "alb" {
-  source                                  = "git::https://github.com/cloudposse/terraform-aws-alb.git?ref=tags/0.21.0"
+  source = "git::https://github.com/cloudposse/terraform-aws-alb.git?ref=tags/0.21.0"
 
   vpc_id                                  = module.vpc.vpc_id
   security_group_ids                      = [module.vpc.vpc_default_security_group_id]
@@ -49,11 +49,11 @@ module "alb" {
   target_group_port                       = var.target_group_port
   target_group_target_type                = var.target_group_target_type
 
-  context    = module.this.context
+  context = module.this.context
 }
 
 module "alb_ingress" {
-  source                              = "../.."
+  source = "../.."
 
   vpc_id                              = module.vpc.vpc_id
   authentication_type                 = var.authentication_type
