@@ -23,12 +23,12 @@ variable "unauthenticated_listener_arns_count" {
 }
 
 variable "listener_http_header_conditions" {
-  type        = list(object({
-    name = string
+  type = list(object({
+    name  = string
     value = list(string)
   }))
   default     = []
-  description = "A list of http header conditions to put on the listener."
+  description = "A list of http header conditions to apply to the listener."
 }
 
 variable "authenticated_listener_arns" {
