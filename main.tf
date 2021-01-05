@@ -58,6 +58,17 @@ resource "aws_lb_listener_rule" "unauthenticated_paths" {
       values = var.unauthenticated_paths
     }
   }
+
+  condition {
+    dynamic "http_header" {
+      for_each = var.listener_http_header_conditions
+
+      content {
+        http_header_name = http_header.value["name"]
+        values           = http_header.value["value"]
+      }
+    }
+  }
 }
 
 resource "aws_lb_listener_rule" "authenticated_paths_oidc" {
@@ -90,6 +101,17 @@ resource "aws_lb_listener_rule" "authenticated_paths_oidc" {
       values = var.authenticated_paths
     }
   }
+
+  condition {
+    dynamic "http_header" {
+      for_each = var.listener_http_header_conditions
+
+      content {
+        http_header_name = http_header.value["name"]
+        values           = http_header.value["value"]
+      }
+    }
+  }
 }
 
 resource "aws_lb_listener_rule" "authenticated_paths_cognito" {
@@ -117,6 +139,17 @@ resource "aws_lb_listener_rule" "authenticated_paths_cognito" {
   condition {
     path_pattern {
       values = var.authenticated_paths
+    }
+  }
+
+  condition {
+    dynamic "http_header" {
+      for_each = var.listener_http_header_conditions
+
+      content {
+        http_header_name = http_header.value["name"]
+        values           = http_header.value["value"]
+      }
     }
   }
 }
@@ -220,6 +253,17 @@ resource "aws_lb_listener_rule" "unauthenticated_hosts_paths" {
   condition {
     path_pattern {
       values = var.unauthenticated_paths
+    }
+  }
+
+  condition {
+    dynamic "http_header" {
+      for_each = var.listener_http_header_conditions
+
+      content {
+        http_header_name = http_header.value["name"]
+        values           = http_header.value["value"]
+      }
     }
   }
 }

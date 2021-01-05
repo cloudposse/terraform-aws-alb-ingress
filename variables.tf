@@ -22,6 +22,15 @@ variable "unauthenticated_listener_arns_count" {
   description = "The number of unauthenticated ARNs in `unauthenticated_listener_arns`. This is necessary to work around a limitation in Terraform where counts cannot be computed"
 }
 
+variable "listener_http_header_conditions" {
+  type = list(object({
+    name  = string
+    value = list(string)
+  }))
+  default     = []
+  description = "A list of http header conditions to apply to the listener."
+}
+
 variable "authenticated_listener_arns" {
   type        = list(string)
   default     = []
