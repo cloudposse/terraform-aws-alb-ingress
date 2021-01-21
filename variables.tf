@@ -50,7 +50,7 @@ variable "deregistration_delay" {
 }
 
 variable "load_balancing_algorithm_type" {
-  type        = "string"
+  type        = string
   default     = "round_robin"
   description = "Determines how the load balancer selects targets when routing requests. Only applicable for Application Load Balancer Target Groups. The value is round_robin or least_outstanding_requests. The default is round_robin."
 }
