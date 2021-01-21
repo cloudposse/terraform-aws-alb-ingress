@@ -23,6 +23,8 @@ resource "aws_lb_target_group" "default" {
 
   deregistration_delay = var.deregistration_delay
 
+  load_balancing_algorithm_type = var.load_balancing_algorithm_type
+
   stickiness {
     type            = var.stickiness_type
     cookie_duration = var.stickiness_cookie_duration
