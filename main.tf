@@ -1,7 +1,5 @@
 locals {
-  target_group_arn             = var.default_target_group_enabled ? join("", aws_lb_target_group.default.*.arn) : var.target_group_arn
-  authentication_oidc_scope    = length(var.authentication_oidc_scope) > 0 ? join("%20", [for scope in var.authentication_oidc_scope : urlencode(scope)]) : null
-  authentication_cognito_scope = length(var.authentication_cognito_scope) > 0 ? join("%20", [for scope in var.authentication_cognito_scope : urlencode(scope)]) : null
+  target_group_arn = var.default_target_group_enabled ? join("", aws_lb_target_group.default.*.arn) : var.target_group_arn
 }
 
 data "aws_lb_target_group" "default" {

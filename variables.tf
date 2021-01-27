@@ -181,9 +181,9 @@ variable "authentication_cognito_user_pool_domain" {
 }
 
 variable "authentication_cognito_scope" {
-  type        = list(string)
+  type        = string
   description = "Cognito scope"
-  default     = []
+  default     = null
 }
 
 variable "authentication_oidc_client_id" {
@@ -223,9 +223,9 @@ variable "authentication_oidc_user_info_endpoint" {
 }
 
 variable "authentication_oidc_scope" {
-  type        = list(string)
+  type        = string
   description = "OIDC scope"
-  default     = []
+  default     = null
 }
 
 variable "slow_start" {
