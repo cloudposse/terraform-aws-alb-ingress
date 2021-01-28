@@ -61,13 +61,16 @@ resource "aws_lb_listener_rule" "unauthenticated_paths" {
     }
   }
 
-  condition {
-    dynamic "http_header" {
-      for_each = var.listener_http_header_conditions
+  dynamic "condition" {
+    for_each = length(var.listener_http_header_conditions) > 0 ? [""] : []
+    content {
+      dynamic "http_header" {
+        for_each = var.listener_http_header_conditions
 
-      content {
-        http_header_name = http_header.value["name"]
-        values           = http_header.value["value"]
+        content {
+          http_header_name = http_header.value["name"]
+          values           = http_header.value["value"]
+        }
       }
     }
   }
@@ -104,13 +107,16 @@ resource "aws_lb_listener_rule" "authenticated_paths_oidc" {
     }
   }
 
-  condition {
-    dynamic "http_header" {
-      for_each = var.listener_http_header_conditions
+  dynamic "condition" {
+    for_each = length(var.listener_http_header_conditions) > 0 ? [""] : []
+    content {
+      dynamic "http_header" {
+        for_each = var.listener_http_header_conditions
 
-      content {
-        http_header_name = http_header.value["name"]
-        values           = http_header.value["value"]
+        content {
+          http_header_name = http_header.value["name"]
+          values           = http_header.value["value"]
+        }
       }
     }
   }
@@ -144,13 +150,16 @@ resource "aws_lb_listener_rule" "authenticated_paths_cognito" {
     }
   }
 
-  condition {
-    dynamic "http_header" {
-      for_each = var.listener_http_header_conditions
+  dynamic "condition" {
+    for_each = length(var.listener_http_header_conditions) > 0 ? [""] : []
+    content {
+      dynamic "http_header" {
+        for_each = var.listener_http_header_conditions
 
-      content {
-        http_header_name = http_header.value["name"]
-        values           = http_header.value["value"]
+        content {
+          http_header_name = http_header.value["name"]
+          values           = http_header.value["value"]
+        }
       }
     }
   }
@@ -258,13 +267,16 @@ resource "aws_lb_listener_rule" "unauthenticated_hosts_paths" {
     }
   }
 
-  condition {
-    dynamic "http_header" {
-      for_each = var.listener_http_header_conditions
+  dynamic "condition" {
+    for_each = length(var.listener_http_header_conditions) > 0 ? [""] : []
+    content {
+      dynamic "http_header" {
+        for_each = var.listener_http_header_conditions
 
-      content {
-        http_header_name = http_header.value["name"]
-        values           = http_header.value["value"]
+        content {
+          http_header_name = http_header.value["name"]
+          values           = http_header.value["value"]
+        }
       }
     }
   }
