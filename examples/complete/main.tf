@@ -3,7 +3,8 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.18.0"
+  source  = "cloudposse/vpc/aws"
+  version = "0.18.0"
 
   cidr_block = var.vpc_cidr_block
 
@@ -11,7 +12,8 @@ module "vpc" {
 }
 
 module "subnets" {
-  source = "git::https://github.com/cloudposse/terraform-aws-dynamic-subnets.git?ref=tags/0.31.0"
+  source  = "cloudposse/dynamic-subnets/aws"
+  version = "0.31.0"
 
   availability_zones   = var.availability_zones
   vpc_id               = module.vpc.vpc_id
@@ -24,7 +26,8 @@ module "subnets" {
 }
 
 module "alb" {
-  source = "git::https://github.com/cloudposse/terraform-aws-alb.git?ref=tags/0.21.0"
+  source  = "cloudposse/alb/aws"
+  version = "0.21.0"
 
   vpc_id                                  = module.vpc.vpc_id
   security_group_ids                      = [module.vpc.vpc_default_security_group_id]

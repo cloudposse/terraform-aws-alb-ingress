@@ -145,7 +145,9 @@ For automated test of the complete example using `bats` and `Terratest`, see [te
   }
 
   module "alb_ingress" {
-    source                              = "git::https://github.com/cloudposse/terraform-aws-alb-ingress.git?ref=master"
+    source = "cloudposse/alb-ingress/aws"
+    # Cloud Posse recommends pinning every module to a specific version
+    # version     = "x.x.x"
     namespace                           = var.namespace
     stage                               = var.stage
     name                                = var.name
@@ -187,7 +189,7 @@ Available targets:
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12.0 |
+| terraform | >= 0.12.26 |
 | aws | >= 2.42 |
 | local | >= 1.3 |
 | null | >= 2.0 |
