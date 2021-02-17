@@ -15,6 +15,20 @@
 |------|---------|
 | aws | >= 2.42 |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| this | cloudposse/label/null | 0.24.1 |
+
+## Resources
+
+| Name |
+|------|
+| [aws_lb_listener_rule](https://registry.terraform.io/providers/hashicorp/aws/2.42/docs/resources/lb_listener_rule) |
+| [aws_lb_target_group](https://registry.terraform.io/providers/hashicorp/aws/2.42/docs/data-sources/lb_target_group) |
+| [aws_lb_target_group](https://registry.terraform.io/providers/hashicorp/aws/2.42/docs/resources/lb_target_group) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -86,5 +100,4 @@
 | target\_group\_arn | ALB Target Group ARN |
 | target\_group\_arn\_suffix | ALB Target Group ARN suffix |
 | target\_group\_name | ALB Target Group name |
-
 <!-- markdownlint-restore -->
