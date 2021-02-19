@@ -16,12 +16,6 @@ variable "unauthenticated_listener_arns" {
   description = "A list of unauthenticated ALB listener ARNs to attach ALB listener rules to"
 }
 
-variable "unauthenticated_listener_arns_count" {
-  type        = number
-  default     = 0
-  description = "The number of unauthenticated ARNs in `unauthenticated_listener_arns`. This is necessary to work around a limitation in Terraform where counts cannot be computed"
-}
-
 variable "listener_http_header_conditions" {
   type = list(object({
     name  = string
@@ -35,12 +29,6 @@ variable "authenticated_listener_arns" {
   type        = list(string)
   default     = []
   description = "A list of authenticated ALB listener ARNs to attach ALB listener rules to"
-}
-
-variable "authenticated_listener_arns_count" {
-  type        = number
-  default     = 0
-  description = "The number of authenticated ARNs in `authenticated_listener_arns`. This is necessary to work around a limitation in Terraform where counts cannot be computed"
 }
 
 variable "deregistration_delay" {
