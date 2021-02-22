@@ -243,7 +243,7 @@ Available targets:
 | authenticated\_listener\_arns | A list of authenticated ALB listener ARNs to attach ALB listener rules to | `list(string)` | `[]` | no |
 | authenticated\_paths | Authenticated path pattern to match (a maximum of 1 can be defined) | `list(string)` | `[]` | no |
 | authenticated\_priority | The priority for the rules with authentication, between 1 and 50000 (1 being highest priority). Must be different from `unauthenticated_priority` since a listener can't have multiple rules with the same priority | `number` | `0` | no |
-| authentication\_cognito\_scope | Cognito scope | `string` | `null` | no |
+| authentication\_cognito\_scope | Cognito scope, which should be a space separated string of requested scopes (see https://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims) | `string` | `null` | no |
 | authentication\_cognito\_user\_pool\_arn | Cognito User Pool ARN | `string` | `""` | no |
 | authentication\_cognito\_user\_pool\_client\_id | Cognito User Pool Client ID | `string` | `""` | no |
 | authentication\_cognito\_user\_pool\_domain | Cognito User Pool Domain. The User Pool Domain should be set to the domain prefix (`xxx`) instead of full domain (https://xxx.auth.us-west-2.amazoncognito.com) | `string` | `""` | no |
@@ -251,7 +251,7 @@ Available targets:
 | authentication\_oidc\_client\_id | OIDC Client ID | `string` | `""` | no |
 | authentication\_oidc\_client\_secret | OIDC Client Secret | `string` | `""` | no |
 | authentication\_oidc\_issuer | OIDC Issuer | `string` | `""` | no |
-| authentication\_oidc\_scope | OIDC scope | `string` | `null` | no |
+| authentication\_oidc\_scope | OIDC scope, which should be a space separated string of requested scopes (see https://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims, and https://developers.google.com/identity/protocols/oauth2/openid-connect#scope-param for an example set of scopes when using Google as the IdP) | `string` | `null` | no |
 | authentication\_oidc\_token\_endpoint | OIDC Token Endpoint | `string` | `""` | no |
 | authentication\_oidc\_user\_info\_endpoint | OIDC User Info Endpoint | `string` | `""` | no |
 | authentication\_type | Authentication type. Supported values are `COGNITO` and `OIDC` | `string` | `""` | no |
