@@ -229,9 +229,9 @@ Available targets:
 
 | Name |
 |------|
-| [aws_lb_listener_rule](https://registry.terraform.io/providers/hashicorp/aws/2.42/docs/resources/lb_listener_rule) |
-| [aws_lb_target_group](https://registry.terraform.io/providers/hashicorp/aws/2.42/docs/data-sources/lb_target_group) |
-| [aws_lb_target_group](https://registry.terraform.io/providers/hashicorp/aws/2.42/docs/resources/lb_target_group) |
+| [aws_lb_listener_rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener_rule) |
+| [aws_lb_target_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/lb_target_group) |
+| [aws_lb_target_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group) |
 
 ## Inputs
 
