@@ -40,7 +40,7 @@ resource "aws_lb_target_group" "default" {
     interval            = var.health_check_interval
     matcher             = var.health_check_matcher
   }
-    
+
   lifecycle {
     create_before_destroy = true
   }
