@@ -186,6 +186,12 @@ variable "authentication_cognito_scope" {
   default     = null
 }
 
+variable "authentication_cognito_on_unauthenticated_request" {
+  type        = string
+  description = "OIDC unauthenticated behavior, deny, allow, or authenticate"
+  default     = "authenticate"
+}
+
 variable "authentication_oidc_client_id" {
   type        = string
   description = "OIDC Client ID"
@@ -226,6 +232,12 @@ variable "authentication_oidc_scope" {
   type        = string
   description = "OIDC scope, which should be a space separated string of requested scopes (see https://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims, and https://developers.google.com/identity/protocols/oauth2/openid-connect#scope-param for an example set of scopes when using Google as the IdP)"
   default     = null
+}
+
+variable "authentication_oidc_on_unauthenticated_request" {
+  type        = string
+  description = "OIDC unauthenticated behavior, deny, allow, or authenticate"
+  default     = "authenticate"
 }
 
 variable "slow_start" {
