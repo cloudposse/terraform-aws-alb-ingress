@@ -188,8 +188,14 @@ variable "authentication_cognito_scope" {
 
 variable "authentication_cognito_on_unauthenticated_request" {
   type        = string
-  description = "OIDC unauthenticated behavior, deny, allow, or authenticate"
+  description = "Cognito unauthenticated behavior, deny, allow, or authenticate"
   default     = "authenticate"
+}
+
+variable "authentication_cognito_request_extra_params" {
+  type        = map(string)
+  description = "Cognito query parameters to include in redirect request"
+  default     = null
 }
 
 variable "authentication_oidc_client_id" {
@@ -238,6 +244,12 @@ variable "authentication_oidc_on_unauthenticated_request" {
   type        = string
   description = "OIDC unauthenticated behavior, deny, allow, or authenticate"
   default     = "authenticate"
+}
+
+variable "authentication_oidc_request_extra_params" {
+  type        = map(string)
+  description = "OIDC query parameters to include in redirect request"
+  default     = null
 }
 
 variable "slow_start" {
