@@ -261,13 +261,24 @@ variable "slow_start" {
 variable "stickiness_type" {
   type        = string
   default     = "lb_cookie"
-  description = "The type of sticky sessions. The only current possible value is `lb_cookie`"
+  description = "The type of sticky sessions."
+
+  validation {
+    condition     = contains(["lb_cookie", "app_cookie"], var.stickiness_type)
+    error_message = "The only current possible values are lb_cookie and app_cookie for ALBs"
+  }
 }
 
 variable "stickiness_cookie_duration" {
   type        = number
   default     = 86400
   description = "The time period, in seconds, during which requests from a client should be routed to the same target. After this time period expires, the load balancer-generated cookie is considered stale. The range is 1 second to 1 week (604800 seconds). The default value is 1 day (86400 seconds)"
+}
+
+variable "stickiness_cookie_name" {
+  type        = string
+  default     = null
+  description = "Name of the application based cookie. AWSALB, AWSALBAPP, and AWSALBTG prefixes are reserved and cannot be used. Only needed when type is app_cookie"
 }
 
 variable "stickiness_enabled" {
