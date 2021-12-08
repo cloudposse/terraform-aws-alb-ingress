@@ -278,7 +278,7 @@ variable "stickiness_cookie_duration" {
 variable "stickiness_cookie_name" {
   type        = string
   default     = null
-  description = "Name of the application based cookie. AWSALB, AWSALBAPP, and AWSALBTG prefixes are reserved and cannot be used. Only needed when type is app_cookie"
+  description = "Name of the application based cookie. AWSALB, AWSALBAPP, and AWSALBTG prefixes are reserved and cannot be used. Only needed when `stickiness_type` is app_cookie"
 }
 
 variable "stickiness_enabled" {
