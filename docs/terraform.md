@@ -5,8 +5,6 @@
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 2.42 |
-| <a name="requirement_local"></a> [local](#requirement\_local) | >= 1.3 |
-| <a name="requirement_null"></a> [null](#requirement\_null) | >= 2.0 |
 
 ## Providers
 
@@ -97,6 +95,7 @@
 | <a name="input_stickiness_type"></a> [stickiness\_type](#input\_stickiness\_type) | The type of sticky sessions. The only current possible value is `lb_cookie` | `string` | `"lb_cookie"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `{'BusinessUnit': 'XYZ'}`).<br>Neither the tag keys nor the tag values will be modified by this module. | `map(string)` | `{}` | no |
 | <a name="input_target_group_arn"></a> [target\_group\_arn](#input\_target\_group\_arn) | Existing ALB target group ARN. If provided, set `default_target_group_enabled` to `false` to disable creation of the default target group | `string` | `""` | no |
+| <a name="input_target_group_name"></a> [target\_group\_name](#input\_target\_group\_name) | Override the target group name | `string` | `""` | no |
 | <a name="input_target_type"></a> [target\_type](#input\_target\_type) | The type (`instance`, `ip` or `lambda`) of targets that can be registered with the target group | `string` | `"ip"` | no |
 | <a name="input_tenant"></a> [tenant](#input\_tenant) | ID element \_(Rarely used, not included by default)\_. A customer identifier, indicating who this instance of a resource is for | `string` | `null` | no |
 | <a name="input_unauthenticated_hosts"></a> [unauthenticated\_hosts](#input\_unauthenticated\_hosts) | Unauthenticated hosts to match in Hosts header | `list(string)` | `[]` | no |

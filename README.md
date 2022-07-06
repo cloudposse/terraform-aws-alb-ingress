@@ -105,18 +105,25 @@ provider "aws" {
 }
 
 module "vpc" {
-  source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.8.1"
+  source     = "cloudposse/vpc/aws"
+  # Cloud Posse recommends pinning every module to a specific version
+  # version     = "x.x.x"
+
   namespace  = var.namespace
   stage      = var.stage
   name       = var.name
   delimiter  = var.delimiter
   attributes = var.attributes
   cidr_block = var.vpc_cidr_block
+
   tags       = var.tags
 }
 
 module "subnets" {
-  source               = "git::https://github.com/cloudposse/terraform-aws-dynamic-subnets.git?ref=tags/0.16.1"
+  source = "cloudposse/dynamic-subnets/aws"
+  # Cloud Posse recommends pinning every module to a specific version
+  # version     = "x.x.x"
+
   availability_zones   = var.availability_zones
   namespace            = var.namespace
   stage                = var.stage
@@ -128,11 +135,15 @@ module "subnets" {
   cidr_block           = module.vpc.vpc_cidr_block
   nat_gateway_enabled  = false
   nat_instance_enabled = false
-  tags                 = var.tags
+
+  tags = var.tags
 }
 
 module "alb" {
-  source                                  = "git::https://github.com/cloudposse/terraform-aws-alb.git?ref=tags/0.7.0"
+  source = "cloudposse/alb/aws"
+  # Cloud Posse recommends pinning every module to a specific version
+  # version     = "x.x.x"
+
   namespace                               = var.namespace
   stage                                   = var.stage
   name                                    = var.name
@@ -159,13 +170,15 @@ module "alb" {
   health_check_matcher                    = var.health_check_matcher
   target_group_port                       = var.target_group_port
   target_group_target_type                = var.target_group_target_type
-  tags                                    = var.tags
+
+  tags = var.tags
 }
 
 module "alb_ingress" {
   source = "cloudposse/alb-ingress/aws"
   # Cloud Posse recommends pinning every module to a specific version
   # version     = "x.x.x"
+
   namespace                           = var.namespace
   stage                               = var.stage
   name                                = var.name
@@ -180,7 +193,8 @@ module "alb_ingress" {
   default_target_group_enabled        = false
   target_group_arn                    = module.alb.default_target_group_arn
   unauthenticated_listener_arns       = [module.alb.http_listener_arn]
-  tags                                = var.tags
+
+  tags = var.tags
 }
 ```
 
@@ -208,8 +222,6 @@ Available targets:
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 2.42 |
-| <a name="requirement_local"></a> [local](#requirement\_local) | >= 1.3 |
-| <a name="requirement_null"></a> [null](#requirement\_null) | >= 2.0 |
 
 ## Providers
 
@@ -300,6 +312,7 @@ Available targets:
 | <a name="input_stickiness_type"></a> [stickiness\_type](#input\_stickiness\_type) | The type of sticky sessions. The only current possible value is `lb_cookie` | `string` | `"lb_cookie"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `{'BusinessUnit': 'XYZ'}`).<br>Neither the tag keys nor the tag values will be modified by this module. | `map(string)` | `{}` | no |
 | <a name="input_target_group_arn"></a> [target\_group\_arn](#input\_target\_group\_arn) | Existing ALB target group ARN. If provided, set `default_target_group_enabled` to `false` to disable creation of the default target group | `string` | `""` | no |
+| <a name="input_target_group_name"></a> [target\_group\_name](#input\_target\_group\_name) | Override the target group name | `string` | `""` | no |
 | <a name="input_target_type"></a> [target\_type](#input\_target\_type) | The type (`instance`, `ip` or `lambda`) of targets that can be registered with the target group | `string` | `"ip"` | no |
 | <a name="input_tenant"></a> [tenant](#input\_tenant) | ID element \_(Rarely used, not included by default)\_. A customer identifier, indicating who this instance of a resource is for | `string` | `null` | no |
 | <a name="input_unauthenticated_hosts"></a> [unauthenticated\_hosts](#input\_unauthenticated\_hosts) | Unauthenticated hosts to match in Hosts header | `list(string)` | `[]` | no |
@@ -462,8 +475,8 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
 ### Contributors
 
 <!-- markdownlint-disable -->
-|  [![Erik Osterman][osterman_avatar]][osterman_homepage]<br/>[Erik Osterman][osterman_homepage] | [![Igor Rodionov][goruha_avatar]][goruha_homepage]<br/>[Igor Rodionov][goruha_homepage] | [![Andriy Knysh][aknysh_avatar]][aknysh_homepage]<br/>[Andriy Knysh][aknysh_homepage] | [![Sarkis Varozian][sarkis_avatar]][sarkis_homepage]<br/>[Sarkis Varozian][sarkis_homepage] |
-|---|---|---|---|
+|  [![Erik Osterman][osterman_avatar]][osterman_homepage]<br/>[Erik Osterman][osterman_homepage] | [![Igor Rodionov][goruha_avatar]][goruha_homepage]<br/>[Igor Rodionov][goruha_homepage] | [![Andriy Knysh][aknysh_avatar]][aknysh_homepage]<br/>[Andriy Knysh][aknysh_homepage] | [![Sarkis Varozian][sarkis_avatar]][sarkis_homepage]<br/>[Sarkis Varozian][sarkis_homepage] | [![RB][nitrocode_avatar]][nitrocode_homepage]<br/>[RB][nitrocode_homepage] |
+|---|---|---|---|---|
 <!-- markdownlint-restore -->
 
   [osterman_homepage]: https://github.com/osterman
@@ -474,6 +487,8 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
   [aknysh_avatar]: https://img.cloudposse.com/150x150/https://github.com/aknysh.png
   [sarkis_homepage]: https://github.com/sarkis
   [sarkis_avatar]: https://img.cloudposse.com/150x150/https://github.com/sarkis.png
+  [nitrocode_homepage]: https://github.com/nitrocode
+  [nitrocode_avatar]: https://img.cloudposse.com/150x150/https://github.com/nitrocode.png
 
 [![README Footer][readme_footer_img]][readme_footer_link]
 [![Beacon][beacon]][website]
