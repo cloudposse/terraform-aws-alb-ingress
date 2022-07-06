@@ -121,6 +121,12 @@ variable "protocol" {
   description = "The protocol for the created ALB target group (if `target_group_arn` is not set)"
 }
 
+variable "target_group_name" {
+  type        = string
+  default     = ""
+  description = "Override the target group name"
+}
+
 variable "target_type" {
   type        = string
   default     = "ip"

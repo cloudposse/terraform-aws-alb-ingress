@@ -11,7 +11,7 @@ data "aws_lb_target_group" "default" {
 resource "aws_lb_target_group" "default" {
   count = module.this.enabled && var.default_target_group_enabled ? 1 : 0
 
-  name        = module.this.id
+  name        = coalesce(var.target_group_name, module.this.id)
   port        = var.port
   protocol    = var.protocol
   slow_start  = var.slow_start
