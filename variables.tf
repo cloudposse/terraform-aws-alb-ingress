@@ -124,7 +124,7 @@ variable "protocol" {
 variable "protocol_version" {
   type        = string
   default     = "HTTP1"
-  description = "The protocol_version for the created ALB target group (if `target_group_arn` is not set and if protocol is either HTTP or HTTPS)"
+  description = "Only applicable when protocol is `HTTP` or `HTTPS`. The protocol version. Specify GRPC to send requests to targets using gRPC. Specify HTTP2 to send requests to targets using HTTP/2. The default is `HTTP1`, which sends requests to targets using HTTP/1.1"
 }
 
 variable "target_group_name" {
