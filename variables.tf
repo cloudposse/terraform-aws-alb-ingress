@@ -121,6 +121,11 @@ variable "protocol" {
   description = "The protocol for the created ALB target group (if `target_group_arn` is not set)"
 }
 
+variable "protocol_version" {
+  type        = string
+  description = "The protocol_version for the created ALB target group (if `target_group_arn` is not set)"
+}
+
 variable "target_group_name" {
   type        = string
   default     = ""
