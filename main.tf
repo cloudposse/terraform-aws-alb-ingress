@@ -11,13 +11,14 @@ data "aws_lb_target_group" "default" {
 resource "aws_lb_target_group" "default" {
   count = module.this.enabled && var.default_target_group_enabled ? 1 : 0
 
-  name        = coalesce(var.target_group_name, module.this.id)
-  port        = var.port
-  protocol    = var.protocol
-  slow_start  = var.slow_start
-  tags        = var.tags
-  target_type = var.target_type
-  vpc_id      = var.vpc_id
+  name             = coalesce(var.target_group_name, module.this.id)
+  port             = var.port
+  protocol         = var.protocol
+  protocol_version = var.protocol_version
+  slow_start       = var.slow_start
+  tags             = var.tags
+  target_type      = var.target_type
+  vpc_id           = var.vpc_id
 
   deregistration_delay = var.deregistration_delay
 
