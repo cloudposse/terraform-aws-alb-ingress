@@ -123,7 +123,8 @@ variable "protocol" {
 
 variable "protocol_version" {
   type        = string
-  description = "The protocol_version for the created ALB target group (if `target_group_arn` is not set)"
+  default     = "HTTP1"
+  description = "The protocol_version for the created ALB target group (if `target_group_arn` is not set and if protocol is either HTTP or HTTPS)"
 }
 
 variable "target_group_name" {
