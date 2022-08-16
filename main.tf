@@ -16,7 +16,6 @@ resource "aws_lb_target_group" "default" {
   protocol         = var.protocol
   protocol_version = var.protocol_version
   slow_start       = var.slow_start
-  tags             = var.tags
   target_type      = var.target_type
   vpc_id           = var.vpc_id
 
@@ -41,6 +40,8 @@ resource "aws_lb_target_group" "default" {
     interval            = var.health_check_interval
     matcher             = var.health_check_matcher
   }
+
+  tags = module.this.tags
 
   lifecycle {
     create_before_destroy = true
