@@ -191,6 +191,20 @@ resource "aws_lb_listener_rule" "unauthenticated_hosts" {
       values = var.unauthenticated_hosts
     }
   }
+
+  dynamic "condition" {
+    for_each = length(var.listener_http_header_conditions) > 0 ? [""] : []
+    content {
+      dynamic "http_header" {
+        for_each = var.listener_http_header_conditions
+
+        content {
+          http_header_name = http_header.value["name"]
+          values           = http_header.value["value"]
+        }
+      }
+    }
+  }
 }
 
 resource "aws_lb_listener_rule" "authenticated_hosts_oidc" {
@@ -226,6 +240,20 @@ resource "aws_lb_listener_rule" "authenticated_hosts_oidc" {
       values = var.authenticated_hosts
     }
   }
+
+  dynamic "condition" {
+    for_each = length(var.listener_http_header_conditions) > 0 ? [""] : []
+    content {
+      dynamic "http_header" {
+        for_each = var.listener_http_header_conditions
+
+        content {
+          http_header_name = http_header.value["name"]
+          values           = http_header.value["value"]
+        }
+      }
+    }
+  }
 }
 
 resource "aws_lb_listener_rule" "authenticated_hosts_cognito" {
@@ -256,6 +284,20 @@ resource "aws_lb_listener_rule" "authenticated_hosts_cognito" {
   condition {
     host_header {
       values = var.authenticated_hosts
+    }
+  }
+
+  dynamic "condition" {
+    for_each = length(var.listener_http_header_conditions) > 0 ? [""] : []
+    content {
+      dynamic "http_header" {
+        for_each = var.listener_http_header_conditions
+
+        content {
+          http_header_name = http_header.value["name"]
+          values           = http_header.value["value"]
+        }
+      }
     }
   }
 }
@@ -337,6 +379,20 @@ resource "aws_lb_listener_rule" "authenticated_hosts_paths_oidc" {
       values = var.authenticated_paths
     }
   }
+
+  dynamic "condition" {
+    for_each = length(var.listener_http_header_conditions) > 0 ? [""] : []
+    content {
+      dynamic "http_header" {
+        for_each = var.listener_http_header_conditions
+
+        content {
+          http_header_name = http_header.value["name"]
+          values           = http_header.value["value"]
+        }
+      }
+    }
+  }
 }
 
 resource "aws_lb_listener_rule" "authenticated_hosts_paths_cognito" {
@@ -373,6 +429,20 @@ resource "aws_lb_listener_rule" "authenticated_hosts_paths_cognito" {
   condition {
     path_pattern {
       values = var.authenticated_paths
+    }
+  }
+
+  dynamic "condition" {
+    for_each = length(var.listener_http_header_conditions) > 0 ? [""] : []
+    content {
+      dynamic "http_header" {
+        for_each = var.listener_http_header_conditions
+
+        content {
+          http_header_name = http_header.value["name"]
+          values           = http_header.value["value"]
+        }
+      }
     }
   }
 }
