@@ -287,3 +287,21 @@ variable "stickiness_enabled" {
   default     = true
   description = "Boolean to enable / disable `stickiness`. Default is `true`"
 }
+
+variable "content_type" {
+  type        = string
+  default     = ""
+  description = "The content type (for fixed_response action). Valid values are text/plain, text/css, text/html, application/javascript and application/json."
+}
+
+variable "message_body" {
+  type        = string
+  default     = null
+  description = "The message body (for fixed_response action)."
+}
+
+variable "status_code" {
+  type        = number
+  default     = null
+  description = "The HTTP response code (for fixed_response action). Valid values are 2XX, 4XX, or 5XX."
+}
