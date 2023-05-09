@@ -2,6 +2,7 @@ locals {
   target_group_arn = var.default_target_group_enabled ? join("", aws_lb_target_group.default.*.arn) : var.target_group_arn
 }
 
+
 data "aws_lb_target_group" "default" {
   count = module.this.enabled ? 1 : 0
 
