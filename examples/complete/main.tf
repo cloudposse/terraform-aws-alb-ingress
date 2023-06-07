@@ -23,7 +23,7 @@ module "subnets" {
 
 module "alb" {
   source  = "cloudposse/alb/aws"
-  version = "1.7.0"
+  version = "1.8.0"
 
   vpc_id                                  = module.vpc.vpc_id
   security_group_ids                      = [module.vpc.vpc_default_security_group_id]
