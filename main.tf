@@ -1,5 +1,5 @@
 locals {
-  target_group_arn = var.default_target_group_enabled ? join("", aws_lb_target_group.default.*.arn) : var.target_group_arn
+  target_group_arn = var.default_target_group_enabled ? join("", aws_lb_target_group.default[*].arn) : var.target_group_arn
 }
 
 data "aws_lb_target_group" "default" {
