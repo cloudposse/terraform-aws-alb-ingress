@@ -12,7 +12,7 @@ module "target_group" {
   source          = "cloudposse/label/null"
   version         = "0.25.0"
   id_length_limit = 32
-  context         = var.context
+  context         = module.this.context
 }
 
 resource "aws_lb_target_group" "default" {
