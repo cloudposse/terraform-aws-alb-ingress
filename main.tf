@@ -8,10 +8,17 @@ data "aws_lb_target_group" "default" {
   arn = local.target_group_arn
 }
 
+module "target_group" {
+  source  = "cloudposse/label/null"
+  version = "0.25.0"
+  id_length_limit = 32
+  context = var.context
+}
+
 resource "aws_lb_target_group" "default" {
   count = module.this.enabled && var.default_target_group_enabled ? 1 : 0
 
-  name             = coalesce(var.target_group_name, module.this.id)
+  name             = coalesce(var.target_group_name, module.target_group.id)
   port             = var.port
   protocol         = var.protocol
   protocol_version = var.protocol_version
