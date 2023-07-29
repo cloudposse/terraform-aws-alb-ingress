@@ -233,6 +233,7 @@ Available targets:
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_target_group"></a> [target\_group](#module\_target\_group) | cloudposse/label/null | 0.25.0 |
 | <a name="module_this"></a> [this](#module\_this) | cloudposse/label/null | 0.25.0 |
 
 ## Resources
