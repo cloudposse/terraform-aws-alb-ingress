@@ -1,0 +1,7 @@
+# Upstream changes from _extends are only recognized when modifications are made to this file in the default branch.
+_extends: .github
+repository:
+  name: terraform-aws-alb-ingress
+  description: Terraform module to provision an HTTP style ingress rule based on hostname and path for an ALB using target groups
+  homepage: https://cloudposse.com/accelerate
+  topics: aws, terraform, terraform-modules, alb, application-load-balancer, ingress, ecs, target-group, hcl2
