@@ -28,7 +28,8 @@ resource "aws_lb_target_group" "default" {
 
   deregistration_delay = var.deregistration_delay
 
-  load_balancing_algorithm_type = var.load_balancing_algorithm_type
+  load_balancing_algorithm_type     = var.load_balancing_algorithm_type
+  load_balancing_anomaly_mitigation = var.load_balancing_anomaly_mitigation
 
   stickiness {
     type            = var.stickiness_type
