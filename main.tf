@@ -87,6 +87,8 @@ resource "aws_lb_listener_rule" "unauthenticated_paths" {
       }
     }
   }
+
+  tags = module.this.tags
 }
 
 resource "aws_lb_listener_rule" "authenticated_paths_oidc" {
@@ -136,6 +138,8 @@ resource "aws_lb_listener_rule" "authenticated_paths_oidc" {
       }
     }
   }
+
+  tags = module.this.tags
 }
 
 resource "aws_lb_listener_rule" "authenticated_paths_cognito" {
@@ -182,6 +186,8 @@ resource "aws_lb_listener_rule" "authenticated_paths_cognito" {
       }
     }
   }
+
+  tags = module.this.tags
 }
 
 resource "aws_lb_listener_rule" "unauthenticated_hosts" {
@@ -214,6 +220,8 @@ resource "aws_lb_listener_rule" "unauthenticated_hosts" {
       }
     }
   }
+
+  tags = module.this.tags
 }
 
 resource "aws_lb_listener_rule" "authenticated_hosts_oidc" {
@@ -263,6 +271,8 @@ resource "aws_lb_listener_rule" "authenticated_hosts_oidc" {
       }
     }
   }
+
+  tags = module.this.tags
 }
 
 resource "aws_lb_listener_rule" "authenticated_hosts_cognito" {
@@ -309,6 +319,8 @@ resource "aws_lb_listener_rule" "authenticated_hosts_cognito" {
       }
     }
   }
+
+  tags = module.this.tags
 }
 
 resource "aws_lb_listener_rule" "unauthenticated_hosts_paths" {
@@ -347,6 +359,8 @@ resource "aws_lb_listener_rule" "unauthenticated_hosts_paths" {
       }
     }
   }
+
+  tags = module.this.tags
 }
 
 resource "aws_lb_listener_rule" "authenticated_hosts_paths_oidc" {
@@ -402,6 +416,8 @@ resource "aws_lb_listener_rule" "authenticated_hosts_paths_oidc" {
       }
     }
   }
+
+  tags = module.this.tags
 }
 
 resource "aws_lb_listener_rule" "authenticated_hosts_paths_cognito" {
@@ -454,4 +470,6 @@ resource "aws_lb_listener_rule" "authenticated_hosts_paths_cognito" {
       }
     }
   }
+
+  tags = module.this.tags
 }
