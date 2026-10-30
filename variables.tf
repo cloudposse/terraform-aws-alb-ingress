@@ -306,5 +306,5 @@ variable "stickiness_cookie_name" {
 variable "stickiness_enabled" {
   type        = bool
   default     = true
-  description = "Boolean to enable / disable `stickiness`. Default is `true`"
+  description = "Boolean to enable / disable `stickiness`. Default is `true`. Ignored when `target_type` is `lambda`, as Lambda target groups do not support stickiness"
 }

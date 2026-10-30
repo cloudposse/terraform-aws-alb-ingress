@@ -31,11 +31,16 @@ resource "aws_lb_target_group" "default" {
   load_balancing_algorithm_type     = var.load_balancing_algorithm_type
   load_balancing_anomaly_mitigation = var.load_balancing_anomaly_mitigation
 
-  stickiness {
-    type            = var.stickiness_type
-    cookie_duration = var.stickiness_cookie_duration
-    cookie_name     = var.stickiness_cookie_name
-    enabled         = var.stickiness_enabled
+  # Lambda target groups do not support stickiness: AWS ignores the block and
+  # never returns it on read, which would cause a permanent diff.
+  dynamic "stickiness" {
+    for_each = var.target_type == "lambda" ? [] : [1]
+    content {
+      type            = var.stickiness_type
+      cookie_duration = var.stickiness_cookie_duration
+      cookie_name     = var.stickiness_cookie_name
+      enabled         = var.stickiness_enabled
+    }
   }
 
   health_check {
